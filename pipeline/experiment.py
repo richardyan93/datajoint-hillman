@@ -6,7 +6,9 @@ schema = dj.schema('hillman_experiment')
 @schema
 class Lab(dj.Lookup):
     definition = """
-    lab        : varchar(32)    # Randylab, Hillmanlab
+    lab                     : varchar(32)    # e.g. Randylab, Hillmanlab
+    ---
+    lab_description=''      : varchar(255)
     """
 
 
@@ -16,6 +18,16 @@ class LabMember(dj.Lookup):
     user        : varchar(32)
     ---
     -> Lab
+    """
+
+
+@schema
+class Project(dj.Lookup):
+    definition = """
+    project                     : varchar(32)
+    ---
+    -> LabMember
+    project_description=''      : varchar(1024)
     """
 
 
@@ -30,10 +42,20 @@ class Species(dj.Lookup):
 class Genotype(dj.Lookup):
     definition = """
     -> Species
-    genotype                    : varchar(32)
+    genotype_nickname           : varchar(32)
     ---
+    genotype_fullname           : varchar(255)
     zygosity='Unknown'          : enum('Homo', 'Hetero', 'Positive', 'Negative', 'Unknown')
     genotype_description=''     : varchar(255)
+    """
+
+
+@schema
+class TissueType(dj.Lookup):
+    definition = """
+    tissue_type                 : varchar(32)
+    ---
+    tissue_type_description=''  : varchar(1024)
     """
 
 
@@ -51,9 +73,29 @@ class Specimen(dj.Manual):
         definition = """
         -> master
         ---
-        tissue_type          : varchar(255)
+        -> TissueType
         tissue_description='': varchar(1024)
         """
+
+
+@schema
+class PreparationType(dj.Lookup):
+    definition = """
+    prep_type    : varchar(32)
+    ---
+    prep_type_description='' : varchar(1024)
+    """
+
+
+@schema
+class Preparation(dj.Manual):
+    definition = """
+    -> Specimen
+    prep_time       : datetime
+    ---
+    -> PreparationType
+    prep_note=''    : varchar(1024)
+    """
 
 
 @schema
@@ -66,12 +108,18 @@ class Organ(dj.Lookup):
 
 
 @schema
+class StimulusType(dj.Lookup):
+    pass
+    # TODO: to think about the structure of stimulus type
+
+
+@schema
 class Session(dj.Manual):
     definition = """
     -> Specimen
     session_start_time      : datetime
     ---
-    data_directory          : varchar(255)
+    data_directory          : varchar(1024)
     -> Organ
     """
 
@@ -80,6 +128,7 @@ class Session(dj.Manual):
         -> master
         ---
         dev_stage   :  enum('larva', 'adult')
-        age         :  int                   # age in the unit of age_unit
-        age_unit    :  enum('hours', 'days')
+        age         :  float                 # age in the unit of age_unit
+        age_unit    :  enum('hours', 'days', 'months', 'years', 'instar')
+        dev_stage_note='': varchar(255)
         """
