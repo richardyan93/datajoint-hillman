@@ -159,7 +159,7 @@ class ScanParameter(dj.Manual):
     stim_status                     :   yes
     scan_size_gb                    :   float
     """
-​
+
     class CameraParam(dj.Part):
         definition = """
         -> master
