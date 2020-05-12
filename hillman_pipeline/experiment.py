@@ -1,4 +1,5 @@
 import datajoint as dj
+import microscopy
 
 schema = dj.schema('hillman_experiment')
 
@@ -107,9 +108,9 @@ class Organ(dj.Lookup):
     """
 
 
-@schema
-class StimulusType(dj.Lookup):
-    pass
+#@schema
+#class StimulusType(dj.Lookup):
+#    pass
     # TODO: to think about the structure of stimulus type
 
 
@@ -120,6 +121,7 @@ class Session(dj.Manual):
     session_start_time      : datetime
     ---
     data_directory          : varchar(1024)
+    backup_location         : varchar(128)      # location of cold backup, eg. GOAT_BACKUP_10
     -> Organ
     """
 
@@ -135,75 +137,75 @@ class Session(dj.Manual):
 
 
 @schema
-class LaserSetting(dj.Lookup):
-    definition = """
-    laser_purpose               :   varchar(256)
-    ---
-    laser_output_power          :   float   # what's the best way to have multiple laser output power here?
-    nd_filter                   :   varchar(32)     #should we use enum here?
-    laser_power_actual_mw       :   float
-    """
-
-
-@schema
 class ScanParameter(dj.Manual):
-    definitoin = """
+    definition = """
     -> Session
-    -> microscopy.ScapeConfig
-    scan_idx                        :   int
+    scan_index                      :   smallint
     ---
+    -> microscopy.ScapeConfig
+    scan_filename                   :   varchar(1024)
     scan_note                       :   varchar(1024)
     scan_start_time                 :   datetime
-    scan_status                     :   enum("Successful", "Interrupted")
+    scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color                      :   bool
-    stim_status                     :   yes
+    stim_status                     :   bool
     scan_size_gb                    :   float
     """
 
     class CameraParam(dj.Part):
         definition = """
         -> master
+        -> microscopty.ScapeConfig.Camera
         ---
-        camera_fps                  :   float
+        camera_fps                  :   decimal(7, 2)
         camera_series_length        :   int
         camera_roi_x                :   int
         camera_roi_y                :   int
+        -> microscopy.TubeLens
+        tubelens_actual_focal_length=null  :   decimal(5, 2)  # (mm)
         """
 
     class CaliFactor(dj.Part):
         definition = """
-        ->master
+        -> master
         ---
-        cali_k                      :   float
-        cali_x                      :   float
-        cali_y                      :   float
-        cali_z                      :   float
+        cali_x                      :   decimal(4, 3)  # (um/pixel)
+        cali_y                      :   decimal(4, 3)  # (um/pixel)
+        cali_z                      :   decimal(4, 3)  # (um/pixel)
         """
+
     class ScanParam(dj.Part):
         definition = """
         -> master
         ---
-        vps                         :   float
+        vps                         :   decimal(5, 2)
         scan_fov_um                 :   float
         scan_fov_pixel              :   float
         scan_length_vol             :   int
         scan_length_s               :   float
         scanner_type                :   enum("HR", "LR", "Single Frame", "Stage Scan")
         """
+
     class LaserParam(dj.Part):
         definition = """
         -> master
-        laser_num_in_use            :   smallint
+        -> microscopy.ScapeConfig.Laser
         ---
-        -> LaserSetting
+        laser_purpose               : varchar(32)
+        laser_output_power          : decimal(5, 1)      # (mW)
+        nd_filter                   : decimal(3, 2)
+        laser_power_actual_mw       : decimal(5, 1)
+        laser_actual_wavelengh=null : decimal(5, 1)      # (nm)
         """
+
     class FilterParam(dj.Part):
         definition = """
         -> master
-        filter_num_in_use           :   smallint
+        filter_index                :   smallint
         ---
-        -> FilterType
+        -> microscopy.Filter
         """
+
     class OtherParam(dj.Part):
         definition = """
         -> master
