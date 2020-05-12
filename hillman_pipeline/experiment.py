@@ -1,4 +1,5 @@
 import datajoint as dj
+import microscopy
 
 schema = dj.schema('hillman_experiment')
 
@@ -107,9 +108,9 @@ class Organ(dj.Lookup):
     """
 
 
-@schema
-class StimulusType(dj.Lookup):
-    pass
+#@schema
+#class StimulusType(dj.Lookup):
+#    pass
     # TODO: to think about the structure of stimulus type
 
 
@@ -120,6 +121,7 @@ class Session(dj.Manual):
     session_start_time      : datetime
     ---
     data_directory          : varchar(1024)
+    backup_location         : varchar(128)      # location of cold backup, eg. GOAT_BACKUP_10
     -> Organ
     """
 
@@ -139,6 +141,7 @@ class LaserSetting(dj.Lookup):
     definition = """
     laser_purpose               :   varchar(256)
     ---
+    ->microscopy.Laser
     laser_output_power          :   float   # what's the best way to have multiple laser output power here?
     nd_filter                   :   varchar(32)     #should we use enum here?
     laser_power_actual_mw       :   float
@@ -147,16 +150,17 @@ class LaserSetting(dj.Lookup):
 
 @schema
 class ScanParameter(dj.Manual):
-    definitoin = """
+    definition = """
     -> Session
     -> microscopy.ScapeConfig
     scan_idx                        :   int
     ---
+    scan_filename                       :   varchar(1024)
     scan_note                       :   varchar(1024)
     scan_start_time                 :   datetime
-    scan_status                     :   enum("Successful", "Interrupted")
+    scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color                      :   bool
-    stim_status                     :   yes
+    stim_status                     :   bool
     scan_size_gb                    :   float
     """
 
@@ -168,6 +172,8 @@ class ScanParameter(dj.Manual):
         camera_series_length        :   int
         camera_roi_x                :   int
         camera_roi_y                :   int
+        -> microscopy.TubeLens
+        #[nullable]tubelens_actual_focal_length  :   decimal(5, 2)  # (mm)
         """
 
     class CaliFactor(dj.Part):
@@ -179,6 +185,7 @@ class ScanParameter(dj.Manual):
         cali_y                      :   float
         cali_z                      :   float
         """
+
     class ScanParam(dj.Part):
         definition = """
         -> master
@@ -190,6 +197,7 @@ class ScanParameter(dj.Manual):
         scan_length_s               :   float
         scanner_type                :   enum("HR", "LR", "Single Frame", "Stage Scan")
         """
+
     class LaserParam(dj.Part):
         definition = """
         -> master
@@ -197,13 +205,15 @@ class ScanParameter(dj.Manual):
         ---
         -> LaserSetting
         """
+
     class FilterParam(dj.Part):
         definition = """
         -> master
         filter_num_in_use           :   smallint
         ---
-        -> FilterType
+        -> microscopy.Filter
         """
+
     class OtherParam(dj.Part):
         definition = """
         -> master
@@ -215,3 +225,8 @@ class ScanParameter(dj.Manual):
         ai_sampling_rate            :   int
         scan_waveform               :   longblob
         """
+
+        
+        
+        
+        
