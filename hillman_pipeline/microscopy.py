@@ -30,6 +30,7 @@ class Laser(dj.Lookup):
     unique index (laser_serial_number)
     laser_wavelength            : smallint unsigned      # (nm)
     laser_max_power             : decimal(7, 1)          # (mW)
+    laser_tunable               : bool
     """
 
 @schema
@@ -58,8 +59,9 @@ class Camera(dj.Lookup):
     camera_serial_number        : varchar(128)
     unique index (camera_serial_number)
     camera_pixelsize            : decimal(4, 2)  # (um)
-    color                       : bool
+    is_color_camera=0           : bool
     """
+
 
 @schema
 class TubeLens(dj.Lookup):
@@ -70,7 +72,7 @@ class TubeLens(dj.Lookup):
     tubelens_focal_length       : decimal(5, 2)  # (mm)
     tubelens_manufacturer       : varchar(32)
     tubelens_part_number        : varchar(64)
-    tubelens_zoom               : bool
+    tubelens_zoomable           : bool
     """
 
 @schema
@@ -82,8 +84,8 @@ class Filter(dj.Lookup):
     filter_manufacturer               : varchar(64)
     filter_brand                      : varchar(64)
     filter_model_number               : varchar(64)
-    filter_center_wavelength          : smallint      #(nm)
-    filter_bandwidth                  : smallint      #(nm)
+    filter_center_wavelength          : smallint      # (nm)
+    filter_bandwidth                  : smallint      # (nm)
     """
 
 @schema
@@ -97,6 +99,7 @@ class ScapeConfig(dj.Manual):
     sys_description=''       : varchar(256)
     laser_coupling           : enum("Dichroic", "Mirror")
     scape_magnification      : float         # Magnification ratio with respect to 70 mm tube lens
+    cal_k                    : decimal(5, 2)
     """
 
     class Laser(dj.Part):
