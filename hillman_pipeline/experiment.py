@@ -112,6 +112,8 @@ class Organ(dj.Lookup):
 #class StimulusType(dj.Lookup):
 #    pass
     # TODO: to think about the structure of stimulus type
+    # stimulus_directory      :varchar(1024)
+    # stimulus_description   ：varchar(1024)
 
 
 @schema
@@ -120,7 +122,7 @@ class Session(dj.Manual):
     -> Specimen
     session_start_time      : datetime
     ---
-    data_directory          : varchar(1024)
+    data_directory          : varchar(1024)     # location on server
     backup_location         : varchar(128)      # location of cold backup, eg. GOAT_BACKUP_10
     -> Organ
     """
@@ -130,7 +132,7 @@ class Session(dj.Manual):
         -> master
         ---
         dev_stage   :  enum('larva', 'adult')
-        age         :  float                 # age in the unit of age_unit
+        age         :  decimal(7, 2)            # age in the unit of age_unit
         age_unit    :  enum('hours', 'days', 'months', 'years', 'instar')
         dev_stage_note='': varchar(255)
         """
@@ -140,7 +142,7 @@ class Session(dj.Manual):
 class ScanParameter(dj.Manual):
     definition = """
     -> Session
-    scan_index                      :   smallint
+    scan_index                      :   smallint     
     ---
     -> microscopy.ScapeConfig
     scan_filename                   :   varchar(1024)
@@ -149,7 +151,7 @@ class ScanParameter(dj.Manual):
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color                      :   bool
     stim_status                     :   bool
-    scan_size_gb                    :   float
+    scan_size_gb                    :   decimal(7, 1)
     """
 
     class CameraParam(dj.Part):
@@ -158,9 +160,9 @@ class ScanParameter(dj.Manual):
         -> microscopty.ScapeConfig.Camera
         ---
         camera_fps                  :   decimal(7, 2)
-        camera_series_length        :   int
-        camera_roi_x                :   int
-        camera_roi_y                :   int
+        camera_series_length        :   int unsigned         # Total frames recorded, including background
+        camera_height               :   smallint unsigned    # pixel
+        camera_width                :   smallint unsigned    # pixel
         -> microscopy.TubeLens
         tubelens_actual_focal_length=null  :   decimal(5, 2)  # (mm)
         """
@@ -169,9 +171,9 @@ class ScanParameter(dj.Manual):
         definition = """
         -> master
         ---
-        cali_x                      :   decimal(4, 3)  # (um/pixel)
-        cali_y                      :   decimal(4, 3)  # (um/pixel)
-        cali_z                      :   decimal(4, 3)  # (um/pixel)
+        calibration_x                :   decimal(5, 3)  # (um/pixel)
+        calibration_y                :   decimal(4, 3)  # (um/pixel)
+        calibration_z                :   decimal(4, 3)  # (um/pixel)
         """
 
     class ScanParam(dj.Part):
@@ -179,10 +181,10 @@ class ScanParameter(dj.Manual):
         -> master
         ---
         vps                         :   decimal(5, 2)
-        scan_fov_um                 :   float
-        scan_fov_pixel              :   float
-        scan_length_vol             :   int
-        scan_length_s               :   float
+        scan_fov_um                 :   decimal(7, 2)
+        scan_fov_pixel              :   int unsigned    # Number of galvo steps
+        scan_length_vol             :   int unsigned    # Number of volumes recorded
+        scan_length_s               :   decimal(8, 2)   # second 
         scanner_type                :   enum("HR", "LR", "Single Frame", "Stage Scan")
         """
 
@@ -210,10 +212,10 @@ class ScanParameter(dj.Manual):
         definition = """
         -> master
         ---
-        saw_tooth                   :   bool
-        scan_angle                  :   float
-        galvo_offset                :   float
-        ai_channel                  :   smallint
-        ai_sampling_rate            :   int
+        saw_tooth=0                 :   bool
+        scan_angle                  :   decimal(7, 3)
+        galvo_offset                :   decimal(4, 1)   # um
+        ai_channel                  :   smallint        
+        ai_sampling_rate            :   int unsigned
         scan_waveform               :   longblob
         """

@@ -7,7 +7,7 @@ schema = dj.schema('hillman_microscope')
 
 @schema
 class ScapeSystem(dj.Lookup):
-    # SCAPE Setup for different setup, e.g.: SCAPE3, MesoSCAPE, etc.
+    # Different SCAPE setup, e.g.: SCAPE3, MesoSCAPE, etc.
     definition = """
     scape_name                   :   varchar(32)
     ---
@@ -99,7 +99,7 @@ class ScapeConfig(dj.Manual):
     sys_description=''       : varchar(256)
     laser_coupling           : enum("Dichroic", "Mirror")
     scape_magnification      : float         # Magnification ratio with respect to 70 mm tube lens
-    cal_k                    : decimal(5, 2)
+    calibration_galvo        : decimal(5, 2) # um per voltage
     """
 
     class Laser(dj.Part):
