@@ -214,8 +214,14 @@ class ScanParameter(dj.Manual):
         ---
         saw_tooth=0                 :   bool
         scan_angle                  :   decimal(7, 3)
-        galvo_offset                :   decimal(4, 1)   # um
-        ai_channel                  :   smallint        
+        galvo_offset                :   decimal(4, 1)   # um       
         ai_sampling_rate            :   int unsigned
         scan_waveform               :   longblob
         """
+        
+    class AI_channel(dj.Part):
+        definition = """
+        ->master
+        channel_id                  : smallint   # Physical DAQ analog input ID
+        ---
+        channel_description         : varchar(1024)
