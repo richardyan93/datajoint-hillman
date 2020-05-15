@@ -225,3 +225,4 @@ class ScanParameter(dj.Manual):
         channel_id                  : smallint   # Physical DAQ analog input ID
         ---
         channel_description         : varchar(1024)
+        """
