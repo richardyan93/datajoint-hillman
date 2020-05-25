@@ -139,10 +139,10 @@ class Session(dj.Manual):
 
 
 @schema
-class ScanParameter(dj.Manual):
+class Scan(dj.Manual):
     definition = """
     -> Session
-    scan_index                      :   smallint     
+    scan_index                      :   smallint
     ---
     -> microscopy.ScapeConfig
     scan_filename                   :   varchar(1024)
@@ -184,7 +184,7 @@ class ScanParameter(dj.Manual):
         scan_fov_um                 :   decimal(7, 2)
         scan_fov_pixel              :   int unsigned    # Number of galvo steps
         scan_length_vol             :   int unsigned    # Number of volumes recorded
-        scan_length_s               :   decimal(8, 2)   # second 
+        scan_length_s               :   decimal(8, 2)   # second
         scanner_type                :   enum("HR", "LR", "Single Frame", "Stage Scan")
         """
 
@@ -208,21 +208,79 @@ class ScanParameter(dj.Manual):
         -> microscopy.Filter
         """
 
+    class AiChannel(dj.Part):
+        definition = """
+        -> master
+        channel_index               : smallint   # Physical DAQ analog input ID
+        ---
+        channel_purpose='hardware'  : enum('stimulus', 'hardware', 'other')
+        channel_description=''      : varchar(1024)
+        """
+
     class OtherParam(dj.Part):
         definition = """
         -> master
         ---
         saw_tooth=0                 :   bool
         scan_angle                  :   decimal(7, 3)
-        galvo_offset                :   decimal(4, 1)   # um       
+        galvo_offset                :   decimal(4, 1)   # um
         ai_sampling_rate            :   int unsigned
         scan_waveform               :   longblob
         """
-        
-    class AI_channel(dj.Part):
+
+
+@schema
+class BehavioralCamera(dj.Lookup):
+    definition = """
+    behavioral_camera    : varchar(32)    # unique nickname of a behavioral camera
+    ---
+    behavioral_camera_part_no=''     : varchar(64)
+    behavioral_camera_manufacturer   : enum('FLIR', 'BASLER', 'ALLIED VISION')
+    """
+
+
+@schema
+class BehavioralSetup(dj.Manual):
+    definition = """
+    behavior_setup              : varchar(32)    # name of a set up
+    behavior_setup_date         : date
+    """
+
+    class Camera(dj.Part):
         definition = """
-        ->master
-        channel_id                  : smallint   # Physical DAQ analog input ID
+        -> master
+        camera_id       :  tinyint unsigned
+        ----
+        -> BehavioralCamera
+        """
+
+        class Filter(dj.Part):
+            definition = """
+            -> master.Camera
+            ---
+            -> microscopy.Filter
+            """
+
+
+@schema
+class BehavioralRecording(dj.Manual):
+    definition = """
+    -> Scan
+    behavior_recording_index        : tinyint unsigned
+    ---
+    behavior_recording_filename     : varchar(1024)
+    # light_source                    : enum('')
+    -> BehavioralSetup
+    """
+
+    class CameraParam(dj.Part):
+        definition = """
+        -> master
+        -> BehavioralSetup.Camera
         ---
-        channel_description         : varchar(1024)
+        camera_fps                  :   decimal(7, 2)
+        camera_series_length        :   int unsigned         # Total frames recorded, including background
+        camera_height               :   smallint unsigned    # pixel
+        camera_width                :   smallint unsigned    # pixel
+        tubelens_actual_focal_length=null  :   decimal(5, 2)  # (mm)
         """
