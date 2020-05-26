@@ -151,7 +151,8 @@ class Scan(dj.Manual):
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color                      :   bool
     stim_status                     :   bool
-    scan_size_gb                    :   decimal(7, 1)
+    stim_description                :   varchar(1024)
+    scan_size_gb                    :   decimal(5, 1)
     """
 
     class CameraParam(dj.Part):
@@ -249,7 +250,7 @@ class BehavioralSetup(dj.Manual):
     class Camera(dj.Part):
         definition = """
         -> master
-        camera_id       :  tinyint unsigned
+        camera_id               :  tinyint unsigned
         ----
         -> BehavioralCamera
         """
@@ -282,5 +283,6 @@ class BehavioralRecording(dj.Manual):
         camera_series_length        :   int unsigned         # Total frames recorded, including background
         camera_height               :   smallint unsigned    # pixel
         camera_width                :   smallint unsigned    # pixel
-        tubelens_actual_focal_length=null  :   decimal(5, 2)  # (mm)
+        tubelens_focal_length=null  :   decimal(5, 2)  # (mm)
+        tubelens_na=null            :   decimal(3,1)
         """
