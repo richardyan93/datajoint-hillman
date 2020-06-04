@@ -1,5 +1,5 @@
 import datajoint as dj
-import microscopy
+from . import microscopy
 
 schema = dj.schema('hillman_experiment')
 
@@ -11,6 +11,7 @@ class Lab(dj.Lookup):
     ---
     lab_description=''      : varchar(255)
     """
+    contents = [['hillmanlab', '']]
 
 
 @schema
@@ -20,6 +21,8 @@ class LabMember(dj.Lookup):
     ---
     -> Lab
     """
+    contents = [['richardyan', 'hillmanlab'],
+                ['wenzeli', 'hillmanlab']]
 
 
 @schema
@@ -37,6 +40,8 @@ class Species(dj.Lookup):
     definition = """
     species        :  varchar(32)
     """
+
+    contents = zip(['mouse', 'worm', 'human', 'rat', 'fly'])
 
 
 @schema
@@ -106,7 +111,7 @@ class Organ(dj.Lookup):
     ---
     organ_discription=''    : varchar(255)
     """
-
+    contents = [['brain', ''], ['whole body', '']]
 
 #@schema
 #class StimulusType(dj.Lookup):
@@ -142,23 +147,23 @@ class Session(dj.Manual):
 class Scan(dj.Manual):
     definition = """
     -> Session
-    scan_index                      :   smallint
+    scan_name                       :   varchar(32)
     ---
     -> microscopy.ScapeConfig
     scan_filename                   :   varchar(1024)
     scan_note                       :   varchar(1024)
     scan_start_time                 :   datetime
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
-    dual_color                      :   bool
-    stim_status                     :   bool
-    stim_description                :   varchar(1024)
-    scan_size_gb                    :   decimal(5, 1)
+    dual_color=0                    :   bool
+    stim_status=0                   :   bool
+    stim_description=''             :   varchar(1024)
+    scan_size_gb=null               :   decimal(5, 1)
     """
 
     class CameraParam(dj.Part):
         definition = """
         -> master
-        -> microscopty.ScapeConfig.Camera
+        -> microscopy.ScapeConfig.Camera
         ---
         camera_fps                  :   decimal(7, 2)
         camera_series_length        :   int unsigned         # Total frames recorded, including background
@@ -172,6 +177,7 @@ class Scan(dj.Manual):
         definition = """
         -> master
         ---
+        calibration_xk               :   decimal(6, 3)
         calibration_x                :   decimal(5, 3)  # (um/pixel)
         calibration_y                :   decimal(4, 3)  # (um/pixel)
         calibration_z                :   decimal(4, 3)  # (um/pixel)

@@ -1,0 +1,108 @@
+import datajoint as dj
+from hillman_pipeline import experiment, microscopy
+import h5py
+import os
+import re
+import datetime
+import numpy as np
+
+# helper functions
+def dataset_to_string(dataset):
+    return ''.join([chr(x) for x in np.hstack(dataset[()])])
+
+
+def dataset_to_scalar(dataset, decimal=2):
+    return round(dataset[()][0][0], decimal)
+
+
+# insert ScapeConfig (fake)
+scape_config = dict(
+    scape_name='scape3',
+    scape_config_number='3.1.2',
+    scape_config_date=datetime.date(2019, 5, 1),
+    laser_coupling='Dichroic',
+    scape_magnification=40.,
+    calibration_galvo=10.2)
+
+microscopy.ScapeConfig.insert1(
+    scape_config, skip_duplicates=True)
+
+datapath = os.path.abspath(os.path.dirname(__file__))
+
+h5py.get_config().default_file_mode = 'r'
+f = h5py.File(os.path.join(datapath, '../../', 'example_data/neuropal20200522/worm1_fast_run1_info.mat'))
+
+maindir = '../../example_data/'
+
+# get a list of directories of sessions
+subdirs = os.listdir(maindir)
+
+for subdir in subdirs:
+
+    # get session date with regular expression
+    date = re.search('[0-9]{8}', subdir)
+    if not date:
+        continue
+
+    date_str = date.group(0)
+    session_date = datetime.datetime.strptime(date_str, '%Y%m%d').date()
+    session_dir = os.path.join(maindir, subdir)
+
+    # only detect the _info.mat files
+    filenames = [filename for filename in os.listdir(session_dir)
+                    if '_info.mat' in filename]
+
+    # get the specimen name
+    specimen = re.search(r'^([A-Za-z0-9]*)_', filenames[0]).groups()[0]
+
+    # insert into the table experiment.Specimen
+    experiment.Specimen.insert1(
+        dict(specimen=specimen,
+             source='richardyan',
+             species='worm'),
+        skip_duplicates=True)  # usually turn on this arg if insert manually
+
+    # insert into the table experiment.Session
+    session_pk = dict(specimen=specimen,
+                       session_start_time=datetime.datetime.combine(session_date, datetime.datetime.min.time()))
+    experiment.Session.insert1(
+        dict(**session_pk,
+             data_directory=session_dir,
+             backup_location='unknown',
+             organ='whole body'),
+        skip_duplicates=True)
+
+    # insert into the table experiment.Scan and its part tables
+    for i_scan, filename in enumerate(filenames):
+
+        # load file
+        f = h5py.File(os.path.join(session_dir, filename))['info']
+        status = dataset_to_string(f['scanStatus'])
+
+        scan_pk = dict(
+            **session_pk,
+            scan_name=dataset_to_string(f['scanName']))
+
+        # insert into the experiment.Scan table
+        experiment.Scan.insert1(
+            dict(**scan_pk,
+                 **scape_config,
+                 scan_filename=filename, # to be replaced by the real tiff name
+                 scan_note=dataset_to_string(f['experiment_notes']),
+                 scan_start_time=datetime.datetime.strptime(
+                     dataset_to_string(f['scanStartTimeApprox']),
+                     '%d-%b-%Y %H:%M:%S'),
+                 scan_status='Successful' if status=='scan complete!' else 'Interrupted',
+                 ),
+            ignore_extra_fields=True,
+            skip_duplicates=True)
+
+        # insert into the part table CaliFactor
+        calfactor = f['GUIcalFactors']
+        experiment.Scan.CaliFactor.insert1(
+            dict(**scan_pk,
+                 calibration_xk=dataset_to_scalar(calfactor['xK_umPerVolt'], 3),
+                 calibration_x=dataset_to_scalar(calfactor['x_umPerPix'], 3),
+                 calibration_y=dataset_to_scalar(calfactor['y_umPerPix'], 3),
+                 calibration_z=dataset_to_scalar(calfactor['z_umPerPix'], 3)),
+            skip_duplicates=True)
