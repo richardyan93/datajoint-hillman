@@ -1,13 +1,13 @@
 % config_file
 
 % connect to server:
-host = '127.0.0.1';
-user = 'ElizabethLab_test';
-password = 'test1';
+host = '';
+user = '';
+password = '';
 
-%setenv('DJ_HOST', '127.0.0.1')
-%setenv('DJ_USER', 'root')
-%setenv('DJ_PASS', 'thermalheadphonesoaklandpax4')
+%setenv('DJ_HOST', '')
+%setenv('DJ_USER', '')
+%setenv('DJ_PASS', '')
 
 % load colony data from speardsheet:
 colonyFileName = 'Copy_of_Log_Elizabeth_lab.xlsx';
