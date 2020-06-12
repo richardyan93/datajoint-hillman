@@ -118,6 +118,7 @@ venv.bak/
 # credential file
 dj_local_conf.json
 root/.one_params
+datajoint-hillman/hillman_mouse_pipeline/+hillman_mouse_auxiliary/configSchema
 
 # docker related file
 docker-compose.yml
