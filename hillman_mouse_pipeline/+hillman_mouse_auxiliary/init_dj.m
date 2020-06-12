@@ -1,15 +1,7 @@
 
 dj.version
 
-subject_yaki_matlab.configSchema;
-
-%setenv('DJ_HOST', '127.0.0.1')
-%setenv('DJ_USER', 'ElizabethLab_test')
-%setenv('DJ_PASS', 'test1')
-
-%setenv('DJ_HOST', '127.0.0.1')
-%setenv('DJ_USER', 'root')
-%setenv('DJ_PASS', 'thermalheadphonesoaklandpax4')
+hillman_mouse_pipeline.hillman_mouse_auxiliary.configSchema;
 
 setenv('DJ_HOST', host)
 setenv('DJ_USER', user)
