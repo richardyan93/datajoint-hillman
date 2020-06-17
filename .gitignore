@@ -1,3 +1,5 @@
+# Matlab temporary files
+*.m~
 
 # IDEA configs
 .idea/
