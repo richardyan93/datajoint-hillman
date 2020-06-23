@@ -1,7 +1,8 @@
 import datajoint as dj
-from hillman_pipeline import experiment, microscopy
 import h5py
-import os
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import experiment, microscopy
 import re
 import datetime
 import numpy as np
@@ -14,6 +15,10 @@ def dataset_to_string(dataset):
 def dataset_to_scalar(dataset, decimal=2):
     return round(dataset[()][0][0], decimal)
 
+# User input section
+maindir = 'D:\example_data'
+source = 'richardyan'
+species = 'worm'
 
 # insert ScapeConfig (fake)
 scape_config = dict(
@@ -30,9 +35,7 @@ microscopy.ScapeConfig.insert1(
 datapath = os.path.abspath(os.path.dirname(__file__))
 
 h5py.get_config().default_file_mode = 'r'
-f = h5py.File(os.path.join(datapath, '../../', 'example_data/neuropal20200522/worm1_fast_run1_info.mat'))
-
-maindir = '../../example_data/'
+#f = h5py.File(os.path.join(datapath, '../../', 'example_data/neuropal20200522/worm1_fast_run1_info.mat'))
 
 # get a list of directories of sessions
 subdirs = os.listdir(maindir)
@@ -58,8 +61,8 @@ for subdir in subdirs:
     # insert into the table experiment.Specimen
     experiment.Specimen.insert1(
         dict(specimen=specimen,
-             source='richardyan',
-             species='worm'),
+             source=source,
+             species=species),
         skip_duplicates=True)  # usually turn on this arg if insert manually
 
     # insert into the table experiment.Session

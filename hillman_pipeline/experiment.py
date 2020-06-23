@@ -1,5 +1,7 @@
 import datajoint as dj
-from . import microscopy
+import os, sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import microscopy
 
 schema = dj.schema('hillman_experiment')
 
@@ -82,23 +84,15 @@ class Organ(dj.Lookup):
     """
     contents = [['brain', ''], ['whole body', '']]
 
-#@schema
-#class StimulusType(dj.Lookup):
-#    pass
-    # TODO: to think about the structure of stimulus type
-    # stimulus_directory      :varchar(1024)
-    # stimulus_description   ：varchar(1024)
-
 
 @schema
 class Session(dj.Manual):
     definition = """
-    -> Specimen
+    -> Species
     session_start_time      : datetime
     ---
     data_directory          : varchar(1024)     # location on server
     backup_location         : varchar(128)      # location of cold backup, eg. GOAT_BACKUP_10
-    -> Organ
     """
 
     class DevStage(dj.Part):
@@ -116,9 +110,11 @@ class Session(dj.Manual):
 class Scan(dj.Manual):
     definition = """
     -> Session
+    -> Specimen
     scan_name                       :   varchar(32)
     ---
     -> microscopy.ScapeConfig
+    -> Organ
     scan_filename                   :   varchar(1024)
     scan_note                       :   varchar(1024)
     scan_start_time                 :   datetime
