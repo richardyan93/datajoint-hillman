@@ -1,7 +1,7 @@
 import datajoint as dj
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-import microscopy
+import microscopy, lab
 
 schema = dj.schema('hillman_experiment')
 
@@ -41,7 +41,7 @@ class Specimen(dj.Manual):
     definition = """
     specimen        : varchar(32)
     ---
-    -> LabMember.proj(source='user')
+    -> lab.LabMember.proj(source='user')
     -> Species
     -> [nullable] Genotype
     """
@@ -95,9 +95,15 @@ class Session(dj.Manual):
     backup_location         : varchar(128)      # location of cold backup, eg. GOAT_BACKUP_10
     """
 
-    class DevStage(dj.Part):
+    class Specimen(dj.Part):
         definition = """
         -> master
+        -> Specimen
+        """
+
+    class DevStage(dj.Part):
+        definition = """
+        -> master.Specimen
         ---
         dev_stage   :  enum('larva', 'adult')
         age         :  decimal(7, 2)            # age in the unit of age_unit

@@ -66,14 +66,18 @@ for subdir in subdirs:
         skip_duplicates=True)  # usually turn on this arg if insert manually
 
     # insert into the table experiment.Session
-    session_pk = dict(specimen=specimen,
-                       session_start_time=datetime.datetime.combine(session_date, datetime.datetime.min.time()))
+    session_pk = dict(species='worm',
+                      session_start_time=datetime.datetime.combine(session_date, datetime.datetime.min.time()))
     experiment.Session.insert1(
         dict(**session_pk,
              data_directory=session_dir,
              backup_location='unknown',
              organ='whole body'),
         skip_duplicates=True)
+
+    experiment.Specimen.insert1(
+        dict(**session_pk, specimen=specimen),
+        skip_dupliates=True)
 
     # insert into the table experiment.Scan and its part tables
     for i_scan, filename in enumerate(filenames):
