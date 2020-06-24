@@ -47,14 +47,14 @@ class Project(dj.Lookup):
     project_description=''      : varchar(1024)
     """
 
-@schema
-class Drug(dj.Lookup):
-    # Drug
-    definition = """
-    drug    : varchar(32)
-    ---
-    (drug_source) -> hillman_lab.Source
-    drug_description='': varchar(255)
-    """
-
-    contents = [['caffeine',''], ['alcohol','']] # need an update
+#@schema
+#class Drug(dj.Lookup):
+#    # Drug
+#    definition = """
+#    drug    : varchar(32)
+#    ---
+#    (drug_source) -> hillman_lab.Source
+#    drug_description='': varchar(255)
+#   """
+#
+#    contents = [['caffeine',''], ['alcohol','']] # need an update
