@@ -115,8 +115,7 @@ class Session(dj.Manual):
 @schema
 class Scan(dj.Manual):
     definition = """
-    -> Session
-    -> Specimen
+    -> Session.Specimen
     scan_name                       :   varchar(32)
     ---
     -> microscopy.ScapeConfig
