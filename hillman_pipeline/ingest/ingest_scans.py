@@ -51,7 +51,7 @@ filenames = [filename for filename in os.listdir(session_dir)
                 if '_info.mat' in filename]
 
 # insert into the table experiment.Session
-session_pk = dict(session_name=session_dir)
+session_pk = dict(session_name=os.path.split(session_dir)[-1])
 experiment.Session.insert1(
     dict(**session_pk,
          data_directory=session_dir,
