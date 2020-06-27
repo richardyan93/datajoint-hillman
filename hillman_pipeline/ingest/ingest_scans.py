@@ -16,7 +16,7 @@ def dataset_to_scalar(dataset, decimal=2):
     return round(dataset[()][0][0], decimal)
 
 # User input section
-session_dir = 'D:\example_data\KatoCalibration20200615'
+session_dir = 'D:\\Neuropal20200528'
 source = 'richardyan'
 species = 'worm'
 
@@ -44,16 +44,17 @@ if not date:
     exit()
 
 date_str = date.group(0)
-#session_date = datetime.datetime.strptime(date_str, '%Y%m%d').date()
+session_date = datetime.datetime.strptime(date_str, '%Y%m%d').date()
 
 # only detect the _info.mat files
 filenames = [filename for filename in os.listdir(session_dir)
                 if '_info.mat' in filename]
 
 # insert into the table experiment.Session
-session_pk = dict(session_name=os.path.split(session_dir)[-1])
+session_pk = os.path.split(session_dir)[-1]
 experiment.Session.insert1(
-    dict(**session_pk,
+    dict(session_name=session_pk,
+         session_date=session_date,
          data_directory=session_dir,
          backup_location='unknown'),
     skip_duplicates=True)
@@ -62,7 +63,7 @@ experiment.Session.insert1(
 for i_scan, filename in enumerate(filenames):
     
     # get the specimen name
-    specimen = re.search(r'^([A-Za-z0-9]*)_', filenames[i_scan]).groups()[0]+'_'+date_str
+    specimen = re.search(r'^([A-Za-z0-9]*)_', filenames[i_scan]).groups()[0]+'_'+session_pk
     
     # insert into the table experiment.Specimen
     experiment.Specimen.insert1(
@@ -72,7 +73,7 @@ for i_scan, filename in enumerate(filenames):
     skip_duplicates=True)  # usually turn on this arg if insert manually
     
     experiment.Session.Specimen.insert1(
-    dict(**session_pk, specimen=specimen),
+    dict(session_name=session_pk, specimen=specimen),
     skip_duplicates=True)
 
     # load file
@@ -80,7 +81,7 @@ for i_scan, filename in enumerate(filenames):
     status = dataset_to_string(f['scanStatus'])
 
     scan_pk = dict(
-        **session_pk,specimen=specimen,
+        session_name=session_pk,specimen=specimen,
         scan_name=dataset_to_string(f['scanName']))
 
     # insert into the experiment.Scan table

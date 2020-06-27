@@ -90,6 +90,7 @@ class Session(dj.Manual):
     definition = """
     session_name            : varchar(128)
     ---
+    session_date            : datetime
     data_directory          : varchar(1024)     # location on server
     backup_location         : varchar(128)      # location of cold backup, eg. GOAT_BACKUP_10
     """
