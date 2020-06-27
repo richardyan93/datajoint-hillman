@@ -1,6 +1,6 @@
 import datajoint as dj
 
-schema = dj.schema('hillman_experiment')
+schema = dj.schema('hillman_lab')
 
 
 @schema
@@ -21,8 +21,8 @@ class LabMember(dj.Lookup):
     full_name:  varchar(32)
     -> Lab
     """
-    contents = [['richardyan', 'hillmanlab'],
-                ['wenzeli', 'hillmanlab']]
+    contents = [['richardyan', 'richardyan','hillmanlab'],
+                ['wenzeli','wenzeli', 'hillmanlab']]
 
 
 @schema
