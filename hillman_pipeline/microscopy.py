@@ -10,7 +10,7 @@ class ScapeSystem(dj.Lookup):
     scape_name                   :   varchar(32)
     ---
     scape_description=''         :   varchar(1024)
-    -> lab.LabMember.proj(person_in_charge='user'):   varchar(128)
+    -> lab.LabMember.proj(person_in_charge='user'):   varchar(32)
     """
     contents = [['SCAPE3','','wenze li'],
                 ['2PSCAPE','','hang yu'],
@@ -36,14 +36,14 @@ class Laser(dj.Lookup):
 class Objective(dj.Lookup):
     # Objectives inventory
     definition = """
-    objective                   : varchar(32)    # unique nickname of objective
+    objective                      : varchar(32)    # unique nickname of objective
     ---
-    objective_mag               : decimal(4, 1)  #
-    objective_na                : decimal(3, 2)
-    objective_imm               : enum('air', 'water', 'oil', 'silicone oil', 'clearing media')
-    objective_manufacturer      : enum('Nikon', 'Olympus', 'Leica', 'Zeiss', 'Edmund', 'Mitutoyo')
-    objective_part_number       : varchar(64)
-    objective_focal_length      : decimal(5, 2)  # (mm)
+    objective_mag                  : decimal(4, 1)  #
+    objective_na                   : decimal(3, 2)
+    objective_imm                  : enum('air', 'water', 'oil', 'silicone oil', 'clearing media')
+    objective_manufacturer         : enum('Nikon', 'Olympus', 'Leica', 'Zeiss', 'Edmund', 'Mitutoyo')
+    objective_part_number          : varchar(64)
+    objective_focal_length         : decimal(5, 2)  # (mm)
     objective_back_focal_plane=''  : decimal(5, 2)  # (mm)
     """
     contents =[['Olympus20X_1.0','20','1.0','water','Olympus','XLUMPLFLN20XW',9,'']]

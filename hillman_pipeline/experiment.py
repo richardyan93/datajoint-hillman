@@ -27,6 +27,7 @@ class Genotype(dj.Lookup):
     """
     contents = [['C elegans','OH16230','OH16230','Unknown','NeuroPal, pan-neuronal GCaMP','Hobert Lab']]
 
+
 @schema
 class TissueType(dj.Lookup):
     definition = """
@@ -34,16 +35,17 @@ class TissueType(dj.Lookup):
     ---
     tissue_type_description=''  : varchar(255)
     """
-    contents = zip([''])
+
 
 @schema
 class Specimen(dj.Manual):
     definition = """
-    specimen        : varchar(32)
+    specimen        : varchar(64)
     ---
     -> lab.LabMember.proj(source='user')
     -> Species
     -> [nullable] Genotype
+    specimen_description =''    :varchar(1024)
     """
 
     class Tissue(dj.Part):
@@ -129,8 +131,8 @@ class Session(dj.Manual):
     -> microscopy.ScapeConfig
     -> [nullable]lab.Project
     session_date            : datetime
-    data_directory          : varchar(1024)     # location on server
-    backup_location         : varchar(128)      # location of cold backup, eg. GOAT_BACKUP_10
+    data_directory          : varchar(256)     # location on server
+    backup_location         : varchar(64)      # location of cold backup, eg. GOAT_BACKUP_10
     """
 
     class Specimen(dj.Part):
@@ -157,7 +159,7 @@ class Scan(dj.Manual):
     scan_name                       :   varchar(64)
     ---
     -> [nullable] Organ
-    scan_metadata_file              :   varchar(256)
+    scan_metadata_file              :   varchar(256)   # File name of metadata
     scan_note=''                    :   varchar(1024)
     scan_start_time                 :   datetime
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
@@ -207,7 +209,7 @@ class Scan(dj.Manual):
         filter_index                :   smallint
         ---
         -> microscopy.Filter
-        position=''                 :   varchar(32)   # Position of the filter, e.g. Red channel, dual channel dichroic, etc.
+        position=''                 :   varchar(64)   # Position of the filter, e.g. Red channel, dual channel dichroic, etc.
         """
 
     class LaserParam(dj.Part):
@@ -255,7 +257,7 @@ class Scan(dj.Manual):
         -> master
         behavior_recording_index        : tinyint unsigned
         ---
-        behavior_recording_filename     : varchar(1024)
+        behavior_recording_filename     : varchar(256)
         -> BehavioralSetup
         """
 
