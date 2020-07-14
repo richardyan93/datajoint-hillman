@@ -30,6 +30,7 @@ class Genotype(dj.Lookup):
 
 @schema
 class TissueType(dj.Lookup):
+    # Check with Kripa
     definition = """
     tissue_type                 : varchar(32)
     ---
@@ -49,6 +50,7 @@ class Specimen(dj.Manual):
     """
 
     class Tissue(dj.Part):
+        # Check with Kripa
         definition = """
         -> master
         ---
@@ -90,10 +92,10 @@ class Organ(dj.Lookup):
 @schema
 class BehavioralSetup(dj.Manual):
     definition = """
-    behavior_setup              : varchar(32)    # unique nickname of a behavior set up
+    behavior_setup                       : varchar(32)    # unique nickname of a behavior set up
     ---
-    behavior_setup_date         : date
-    behavior_description        : varchar(1024)
+    behavior_setup_date                  : date
+    behavior_setup_description=''        : varchar(1024)
     """
 
     class Camera(dj.Part):
@@ -102,15 +104,9 @@ class BehavioralSetup(dj.Manual):
         camera_id               :  tinyint unsigned
         ---
         -> microscopy.Camera
+        -> microscopy.Filter
+        camera_description=''   : varchar(1024)
         """
-
-        class Filter(dj.Part):
-            # Filter installed in front of the camera
-            definition = """
-            -> master.Camera
-            ---
-            -> microscopy.Filter
-            """
 
 
 @schema
@@ -141,16 +137,6 @@ class Session(dj.Manual):
         -> Specimen
         """
 
-    class DevStage(dj.Part):
-        definition = """
-        -> master.Specimen
-        ---
-        dev_stage   :  enum('larva', 'adult','embryo','others')
-        age         :  decimal(7, 2)            # age in the unit of age_unit
-        age_unit    :  enum('hours', 'days', 'months', 'years', 'instar')
-        dev_stage_note='': varchar(255)
-        """
-
 
 @schema
 class Scan(dj.Manual):
@@ -165,9 +151,18 @@ class Scan(dj.Manual):
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color=0                    :   bool
     scan_size=null                  :   decimal(5, 1)     # GB
-    -> [nullable] BehavioralSetup
     -> [nullable] StimSetup
     """
+
+    class DevStage(dj.Part):
+        definition = """
+        -> master
+        ---
+        dev_stage   :  enum('larva', 'adult','embryo','others')
+        age         :  decimal(7, 2)            # age in the unit of age_unit
+        age_unit    :  enum('hours', 'days', 'months', 'years', 'instar')
+        dev_stage_note='': varchar(255)
+        """
 
     class CaliFactor(dj.Part):
         definition = """
@@ -241,7 +236,7 @@ class Scan(dj.Manual):
         scan_angle=NULL             :   decimal(7, 3)
         galvo_offset=0              :   decimal(4, 1)   # um
         ai_sampling_rate            :   int unsigned
-        DAQ_data_filename           :   varchar(256)    # DAQ AI file name
+        daq_data_filename           :   varchar(256)    # DAQ AI file name
         """
 
     class MiscFiles(dj.Part):
@@ -252,24 +247,16 @@ class Scan(dj.Manual):
         file_description=''         : varchar(1024)
         """
 
-    class BehavioralRecording(dj.Part):
+    class BehaviorCamera(dj.Part):
         definition = """
         -> master
-        behavior_recording_index        : tinyint unsigned
+        -> BehavioralSetup.Camera
         ---
         behavior_recording_filename     : varchar(256)
-        -> BehavioralSetup
+        camera_fps                  :   decimal(7, 2)
+        camera_series_length        :   int unsigned         # Total frames recorded, including background
+        camera_height               :   smallint unsigned    # pixel
+        camera_width                :   smallint unsigned    # pixel
+        tubelens_focal_length=null  :   decimal(5, 2)        # (mm)
+        tubelens_na=null            :   decimal(3,1)
         """
-
-        class CameraParam(dj.Part):
-            definition = """
-            -> master
-            -> BehavioralSetup.Camera
-            ---
-            camera_fps                  :   decimal(7, 2)
-            camera_series_length        :   int unsigned         # Total frames recorded, including background
-            camera_height               :   smallint unsigned    # pixel
-            camera_width                :   smallint unsigned    # pixel
-            tubelens_focal_length=null  :   decimal(5, 2)        # (mm)
-            tubelens_na=null            :   decimal(3,1)
-            """

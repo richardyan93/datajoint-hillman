@@ -31,7 +31,7 @@ class LabMember(dj.Lookup):
                 ['citlali campos','hillmanlab'],
                 ['venkata voleti','hillmanlab'],
                 ['boss','hillmanlab']]
-                
+
 
 @schema
 class Source(dj.Lookup):

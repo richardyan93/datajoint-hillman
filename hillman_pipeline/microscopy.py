@@ -10,7 +10,7 @@ class ScapeSystem(dj.Lookup):
     scape_name                   :   varchar(32)
     ---
     scape_description=''         :   varchar(1024)
-    -> lab.LabMember.proj(person_in_charge='user'):   varchar(32)
+    -> lab.LabMember.proj(person_in_charge='user')
     """
     contents = [['SCAPE3','','wenze li'],
                 ['2PSCAPE','','hang yu'],
