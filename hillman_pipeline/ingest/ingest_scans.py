@@ -16,8 +16,8 @@ def dataset_to_scalar(dataset, decimal=2):
     return round(dataset[()][0][0], decimal)
 
 # User input section
-session_dir = 'D:\\Neuropal20200528'
-source = 'richardyan'
+session_dir = 'E:\\Kimara Backed up\Geli_zebrafish_20191112'
+source = 'richard yan'
 species = 'worm'
 
 # insert ScapeConfig (fake)
@@ -51,19 +51,25 @@ filenames = [filename for filename in os.listdir(session_dir)
                 if '_info.mat' in filename]
 
 # insert into the table experiment.Session
-session_pk = os.path.split(session_dir)[-1]
+session_name=os.path.split(session_dir)[-1]
+session_pk = dict(
+    session_name=session_name,
+    user = 'richard yan',
+    scape_config_number='3.1.2',
+    project = 'NeuroPal',
+    session_date = session_date,
+    data_directory = session_dir,
+    backup_location='unknown')
+    
 experiment.Session.insert1(
-    dict(session_name=session_pk,
-         session_date=session_date,
-         data_directory=session_dir,
-         backup_location='unknown'),
+    dict(**session_pk),
     skip_duplicates=True)
 
 # insert into the table experiment.Scan and its part tables
 for i_scan, filename in enumerate(filenames):
     
     # get the specimen name
-    specimen = re.search(r'^([A-Za-z0-9]*)_', filenames[i_scan]).groups()[0]+'_'+session_pk
+    specimen = re.search(r'^([A-Za-z0-9]*)_', filenames[i_scan]).groups()[0]+'_'+session_name
     
     # insert into the table experiment.Specimen
     experiment.Specimen.insert1(
@@ -73,7 +79,7 @@ for i_scan, filename in enumerate(filenames):
     skip_duplicates=True)  # usually turn on this arg if insert manually
     
     experiment.Session.Specimen.insert1(
-    dict(session_name=session_pk, specimen=specimen),
+    dict(session_name=session_name, specimen=specimen),
     skip_duplicates=True)
 
     # load file
@@ -81,13 +87,12 @@ for i_scan, filename in enumerate(filenames):
     status = dataset_to_string(f['scanStatus'])
 
     scan_pk = dict(
-        session_name=session_pk,specimen=specimen,
+        session_name=session_name,specimen=specimen,
         scan_name=dataset_to_string(f['scanName']))
 
     # insert into the experiment.Scan table
     experiment.Scan.insert1(
         dict(**scan_pk,
-             **scape_config,
              scan_filename=filename, # to be replaced by the real tiff name
              scan_note=dataset_to_string(f['experiment_notes']),
              scan_start_time=datetime.datetime.strptime(

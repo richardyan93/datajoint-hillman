@@ -18,12 +18,20 @@ class LabMember(dj.Lookup):
     definition = """
     user        : varchar(32)
     ---
-    full_name:  varchar(32)
     -> Lab
     """
-    contents = [['richardyan', 'richardyan','hillmanlab'],
-                ['wenzeli','wenzeli', 'hillmanlab']]
-
+    contents = [['richard yan','hillmanlab'],
+                ['wenze li', 'hillmanlab'],
+                ['hang yu','hillmanlab'],
+                ['wenxuan liang','hillmanlab'],
+                ['sam benezra','hillmanlab'],
+                ['malte casper','hillmanlab'],
+                ['grace lee','hillmanlab'],
+                ['kripa patel','hillmanlab'],
+                ['citlali campos','hillmanlab'],
+                ['venkata voleti','hillmanlab'],
+                ['boss','hillmanlab']]
+                
 
 @schema
 class Source(dj.Lookup):
@@ -46,15 +54,5 @@ class Project(dj.Lookup):
     -> LabMember
     project_description=''      : varchar(1024)
     """
-
-#@schema
-#class Drug(dj.Lookup):
-#    # Drug
-#    definition = """
-#    drug    : varchar(32)
-#    ---
-#    (drug_source) -> hillman_lab.Source
-#    drug_description='': varchar(255)
-#   """
-#
-#    contents = [['caffeine',''], ['alcohol','']] # need an update
+    contents =[['NeuroPal','richard yan',''],
+               ['KimaraHeart','richard yan','']]

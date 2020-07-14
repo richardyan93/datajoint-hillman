@@ -11,8 +11,7 @@ class Species(dj.Lookup):
     definition = """
     species        :  varchar(32)
     """
-
-    contents = zip(['mouse', 'worm', 'human', 'rat', 'fly'])
+    contents = zip(['mouse', 'C elegans', 'rat', 'fly','zebrafish'])
 
 
 @schema
@@ -23,18 +22,19 @@ class Genotype(dj.Lookup):
     ---
     genotype_fullname           : varchar(255)
     zygosity='Unknown'          : enum('Homo', 'Hetero', 'Positive', 'Negative', 'Unknown')
-    genotype_description=''     : varchar(255)
+    genotype_description=''     : varchar(1024)
+    source=''                   : varchar(32)
     """
-
+    contents = [['C elegans','OH16230','OH16230','Unknown','NeuroPal, pan-neuronal GCaMP','Hobert Lab']]
 
 @schema
 class TissueType(dj.Lookup):
     definition = """
     tissue_type                 : varchar(32)
     ---
-    tissue_type_description=''  : varchar(1024)
+    tissue_type_description=''  : varchar(255)
     """
-
+    contents = zip([''])
 
 @schema
 class Specimen(dj.Manual):
@@ -86,10 +86,48 @@ class Organ(dj.Lookup):
 
 
 @schema
+class BehavioralSetup(dj.Manual):
+    definition = """
+    behavior_setup              : varchar(32)    # unique nickname of a behavior set up
+    ---
+    behavior_setup_date         : date
+    behavior_description        : varchar(1024)
+    """
+
+    class Camera(dj.Part):
+        definition = """
+        -> master
+        camera_id               :  tinyint unsigned
+        ---
+        -> microscopy.Camera
+        """
+
+        class Filter(dj.Part):
+            # Filter installed in front of the camera
+            definition = """
+            -> master.Camera
+            ---
+            -> microscopy.Filter
+            """
+
+
+@schema
+class StimSetup(dj.Manual):
+    definition = """
+    stim_setup                  : varchar(32)     # unique nickname of a stim set up
+    ---
+    stim_description            : varchar(1024)
+    """
+
+
+@schema
 class Session(dj.Manual):
     definition = """
-    session_name            : varchar(128)
+    session_name            : varchar(32)
     ---
+    -> lab.LabMember
+    -> microscopy.ScapeConfig
+    -> [nullable]lab.Project
     session_date            : datetime
     data_directory          : varchar(1024)     # location on server
     backup_location         : varchar(128)      # location of cold backup, eg. GOAT_BACKUP_10
@@ -105,7 +143,7 @@ class Session(dj.Manual):
         definition = """
         -> master.Specimen
         ---
-        dev_stage   :  enum('larva', 'adult')
+        dev_stage   :  enum('larva', 'adult','embryo','others')
         age         :  decimal(7, 2)            # age in the unit of age_unit
         age_unit    :  enum('hours', 'days', 'months', 'years', 'instar')
         dev_stage_note='': varchar(255)
@@ -116,38 +154,23 @@ class Session(dj.Manual):
 class Scan(dj.Manual):
     definition = """
     -> Session.Specimen
-    scan_name                       :   varchar(32)
+    scan_name                       :   varchar(64)
     ---
-    -> microscopy.ScapeConfig
     -> [nullable] Organ
-    scan_filename                   :   varchar(1024)
-    scan_note                       :   varchar(1024)
+    scan_metadata_file              :   varchar(256)
+    scan_note=''                    :   varchar(1024)
     scan_start_time                 :   datetime
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color=0                    :   bool
-    stim_status=0                   :   bool
-    stim_description=''             :   varchar(1024)
-    scan_size_gb=null               :   decimal(5, 1)
+    scan_size=null                  :   decimal(5, 1)     # GB
+    -> [nullable] BehavioralSetup
+    -> [nullable] StimSetup
     """
-
-    class CameraParam(dj.Part):
-        definition = """
-        -> master
-        -> microscopy.ScapeConfig.Camera
-        ---
-        camera_fps                  :   decimal(7, 2)
-        camera_series_length        :   int unsigned         # Total frames recorded, including background
-        camera_height               :   smallint unsigned    # pixel
-        camera_width                :   smallint unsigned    # pixel
-        -> microscopy.TubeLens
-        tubelens_actual_focal_length=null  :   decimal(5, 2)  # (mm)
-        """
 
     class CaliFactor(dj.Part):
         definition = """
         -> master
         ---
-        calibration_xk               :   decimal(6, 3)
         calibration_x                :   decimal(5, 3)  # (um/pixel)
         calibration_y                :   decimal(4, 3)  # (um/pixel)
         calibration_z                :   decimal(4, 3)  # (um/pixel)
@@ -159,22 +182,23 @@ class Scan(dj.Manual):
         ---
         vps                         :   decimal(5, 2)
         scan_fov_um                 :   decimal(7, 2)
-        scan_fov_pixel              :   int unsigned    # Number of galvo steps
+        scan_fov_pixel              :   int unsigned    # Number of galvo steps,including flyback
         scan_length_vol             :   int unsigned    # Number of volumes recorded
         scan_length_s               :   decimal(8, 2)   # second
-        scanner_type                :   enum("HR", "LR", "Single Frame", "Stage Scan")
+        scanner_type=''             :   enum('HR', '', 'Single Frame', 'Stage Scan')
         """
 
-    class LaserParam(dj.Part):
+    class CameraParam(dj.Part):
         definition = """
         -> master
-        -> microscopy.ScapeConfig.Laser
+        -> microscopy.ScapeConfig.Camera
         ---
-        laser_purpose               : varchar(32)
-        laser_output_power          : decimal(5, 1)      # (mW)
-        nd_filter                   : decimal(3, 2)
-        laser_power_actual_mw       : decimal(5, 1)
-        laser_actual_wavelengh=null : decimal(5, 1)      # (nm)
+        camera_fps                  :   decimal(9, 2)
+        camera_series_length        :   int unsigned         # Total frames recorded, including background
+        camera_height               :   smallint unsigned    # pixel
+        camera_width                :   smallint unsigned    # pixel
+        -> microscopy.TubeLens
+        tubelens_actual_focal_length=null  :   decimal(5, 2)  # (mm)
         """
 
     class FilterParam(dj.Part):
@@ -183,6 +207,19 @@ class Scan(dj.Manual):
         filter_index                :   smallint
         ---
         -> microscopy.Filter
+        position=''                 :   varchar(32)   # Position of the filter, e.g. Red channel, dual channel dichroic, etc.
+        """
+
+    class LaserParam(dj.Part):
+        definition = """
+        -> master
+        -> microscopy.ScapeConfig.Laser
+        ---
+        laser_purpose=''            : varchar(32)
+        laser_output_power          : decimal(5, 1)      # (mW)
+        nd_filter                   : decimal(3, 2)      # O.D.
+        laser_power_actual_mw       : decimal(7, 3)
+        laser_actual_wavelengh=null : decimal(5, 1)      # (nm)
         """
 
     class AiChannel(dj.Part):
@@ -194,71 +231,43 @@ class Scan(dj.Manual):
         channel_description=''      : varchar(1024)
         """
 
-    class OtherParam(dj.Part):
+    class MiscParam(dj.Part):
         definition = """
         -> master
         ---
         saw_tooth=0                 :   bool
-        scan_angle                  :   decimal(7, 3)
-        galvo_offset                :   decimal(4, 1)   # um
+        scan_angle=NULL             :   decimal(7, 3)
+        galvo_offset=0              :   decimal(4, 1)   # um
         ai_sampling_rate            :   int unsigned
-        scan_waveform               :   longblob
+        DAQ_data_filename           :   varchar(256)    # DAQ AI file name
         """
 
-
-@schema
-class BehavioralCamera(dj.Lookup):
-    definition = """
-    behavioral_camera    : varchar(32)    # unique nickname of a behavioral camera
-    ---
-    behavioral_camera_part_no=''     : varchar(64)
-    behavioral_camera_manufacturer   : enum('FLIR', 'BASLER', 'ALLIED VISION')
-    """
-
-
-@schema
-class BehavioralSetup(dj.Manual):
-    definition = """
-    behavior_setup              : varchar(32)    # name of a set up
-    behavior_setup_date         : date
-    """
-
-    class Camera(dj.Part):
+    class MiscFiles(dj.Part):
         definition = """
         -> master
-        camera_id               :  tinyint unsigned
-        ----
-        -> BehavioralCamera
-        """
-
-        class Filter(dj.Part):
-            definition = """
-            -> master.Camera
-            ---
-            -> microscopy.Filter
-            """
-
-
-@schema
-class BehavioralRecording(dj.Manual):
-    definition = """
-    -> Scan
-    behavior_recording_index        : tinyint unsigned
-    ---
-    behavior_recording_filename     : varchar(1024)
-    # light_source                    : enum('')
-    -> BehavioralSetup
-    """
-
-    class CameraParam(dj.Part):
-        definition = """
-        -> master
-        -> BehavioralSetup.Camera
+        filename                    : varchar(256)
         ---
-        camera_fps                  :   decimal(7, 2)
-        camera_series_length        :   int unsigned         # Total frames recorded, including background
-        camera_height               :   smallint unsigned    # pixel
-        camera_width                :   smallint unsigned    # pixel
-        tubelens_focal_length=null  :   decimal(5, 2)  # (mm)
-        tubelens_na=null            :   decimal(3,1)
+        file_description=''         : varchar(1024)
         """
+
+    class BehavioralRecording(dj.Part):
+        definition = """
+        -> master
+        behavior_recording_index        : tinyint unsigned
+        ---
+        behavior_recording_filename     : varchar(1024)
+        -> BehavioralSetup
+        """
+
+        class CameraParam(dj.Part):
+            definition = """
+            -> master
+            -> BehavioralSetup.Camera
+            ---
+            camera_fps                  :   decimal(7, 2)
+            camera_series_length        :   int unsigned         # Total frames recorded, including background
+            camera_height               :   smallint unsigned    # pixel
+            camera_width                :   smallint unsigned    # pixel
+            tubelens_focal_length=null  :   decimal(5, 2)        # (mm)
+            tubelens_na=null            :   decimal(3,1)
+            """

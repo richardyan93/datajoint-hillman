@@ -1,8 +1,6 @@
 import datajoint as dj
 
 schema = dj.schema('hillman_microscope')
-#schema.drop(True)
-#schema = dj.schema('hillman_microscope')
 
 
 @schema
@@ -11,11 +9,12 @@ class ScapeSystem(dj.Lookup):
     definition = """
     scape_name                   :   varchar(32)
     ---
-    scape_description=''         :   varchar(2047)
-    system_location=''           :   varchar(256)
-    person_in_charge=''          :   varchar(128)
+    scape_description=''         :   varchar(1024)
+    -> lab.LabMember.proj(person_in_charge='user'):   varchar(128)
     """
-    contents = [dict(scape_name='scape3')]
+    contents = [['SCAPE3','','wenze li'],
+                ['2PSCAPE','','hang yu'],
+                ['YANSCAPE','','richard yan']]
 
 
 @schema
@@ -24,14 +23,14 @@ class Laser(dj.Lookup):
     definition = """
     laser                       : varchar(32)            # unique nickname of laser
     ---
-    laser_brand                 : varchar(256)
-    laser_model                 : varchar(256)
-    laser_serial_number         : varchar(128)
-    unique index (laser_serial_number)
+    laser_brand                 : varchar(64)
+    laser_part_number           : varchar(64)
+    unique index (laser_part_number)
     laser_wavelength            : smallint unsigned      # (nm)
     laser_max_power             : decimal(7, 1)          # (mW)
-    laser_tunable               : bool
+    laser_tunable=0             : bool
     """
+    contents = [['OBIS488_150mW','Coherent','1220123','488','150',0]]
 
 @schema
 class Objective(dj.Lookup):
@@ -45,8 +44,9 @@ class Objective(dj.Lookup):
     objective_manufacturer      : enum('Nikon', 'Olympus', 'Leica', 'Zeiss', 'Edmund', 'Mitutoyo')
     objective_part_number       : varchar(64)
     objective_focal_length      : decimal(5, 2)  # (mm)
-    objective_back_focal_plane  : decimal(5, 2)  # (mm)
+    objective_back_focal_plane=''  : decimal(5, 2)  # (mm)
     """
+    contents =[['Olympus20X_1.0','20','1.0','water','Olympus','XLUMPLFLN20XW',9,'']]
 
 @schema
 class Camera(dj.Lookup):
@@ -54,49 +54,48 @@ class Camera(dj.Lookup):
     definition = """
     camera                      : varchar(32)    # unique nickname of camera
     ---
-    camera_manufacturer         : enum('Andor', 'Lambert', 'Hamamatsu', 'Teledyne', 'Basler', 'FLIR','PCO')
+    camera_manufacturer         : enum('Andor', 'Lambert', 'Hamamatsu', 'Teledyne', 'Basler', 'FLIR','PCO', 'ALLIED VISION')
     camera_model                : varchar(64)
-    camera_serial_number        : varchar(128)
-    unique index (camera_serial_number)
     camera_pixelsize            : decimal(4, 2)  # (um)
     is_color_camera=0           : bool
     """
+    contents = [['Zyla4.2','Andor','Zyla4.2Plus',6.5,0]]
 
 
 @schema
 class TubeLens(dj.Lookup):
     # Tubelens inventory
     definition = """
-    tubelens                    : varchar(32)
+    tubelens                    : varchar(64)
     ---
     tubelens_focal_length       : decimal(5, 2)  # (mm)
     tubelens_manufacturer       : varchar(32)
-    tubelens_part_number        : varchar(64)
-    tubelens_zoomable           : bool
+    tubelens_part_number=''     : varchar(64)
+    tubelens_zoomable=0         : bool
     """
+    contents = [['Canon EF 85mm f/1.8',85,'Canon','',0]]
 
 @schema
 class Filter(dj.Lookup):
     # Filters inventory
     definition = """
-    filter                            : varchar(64)   # unique nickname of filter
+    filter_part_number                : varchar(32)
     ---
     filter_manufacturer               : varchar(64)
-    filter_brand                      : varchar(64)
-    filter_model_number               : varchar(64)
-    filter_center_wavelength          : smallint      # (nm)
-    filter_bandwidth                  : smallint      # (nm)
+    filter_description =''            : varchar(256)
     """
+    contents = [['ET575LP','Chroma','575 Long Pass']]
+
 
 @schema
 class ScapeConfig(dj.Manual):
     # Version of Optical/Hardware Setup
     definition = """
-    -> ScapeSystem
-    scape_config_number      : varchar(16)   # e.g. 3.1.2
+    scape_config_number      : varchar(32)   # e.g. 3.1.2
     ---
+    -> ScapeSystem
     scape_config_date        : date
-    sys_description=''       : varchar(256)
+    sys_description=''       : varchar(1024)
     laser_coupling           : enum("Dichroic", "Mirror")
     scape_magnification      : float         # Magnification ratio with respect to 70 mm tube lens
     calibration_galvo        : decimal(5, 2) # um per voltage
