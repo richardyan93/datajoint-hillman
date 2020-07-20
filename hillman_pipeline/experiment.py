@@ -25,7 +25,6 @@ class Genotype(dj.Lookup):
     genotype_description=''     : varchar(1024)
     source=''                   : varchar(32)
     """
-    contents = [['C elegans','OH16230','OH16230','Unknown','NeuroPal, pan-neuronal GCaMP','Hobert Lab']]
 
 
 @schema

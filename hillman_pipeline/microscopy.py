@@ -1,4 +1,7 @@
 import datajoint as dj
+import os, sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import lab
 
 schema = dj.schema('hillman_microscope')
 
@@ -12,9 +15,6 @@ class ScapeSystem(dj.Lookup):
     scape_description=''         :   varchar(1024)
     -> lab.LabMember.proj(person_in_charge='user')
     """
-    contents = [['SCAPE3','','wenze li'],
-                ['2PSCAPE','','hang yu'],
-                ['YANSCAPE','','richard yan']]
 
 
 @schema
@@ -46,7 +46,7 @@ class Objective(dj.Lookup):
     objective_focal_length         : decimal(5, 2)  # (mm)
     objective_back_focal_plane=''  : decimal(5, 2)  # (mm)
     """
-    contents =[['Olympus20X_1.0','20','1.0','water','Olympus','XLUMPLFLN20XW',9,'']]
+    contents =[['Olympus20X_1.0','20','1.0','water','Olympus','XLUMPLFLN20XW',9]]
 
 @schema
 class Camera(dj.Lookup):
@@ -73,7 +73,7 @@ class TubeLens(dj.Lookup):
     tubelens_part_number=''     : varchar(64)
     tubelens_zoomable=0         : bool
     """
-    contents = [['Canon EF 85mm f/1.8',85,'Canon','',0]]
+    contents = [['Canon EF 85mm f/1.8',85,'Canon','']]
 
 @schema
 class Filter(dj.Lookup):
@@ -84,7 +84,6 @@ class Filter(dj.Lookup):
     filter_manufacturer               : varchar(64)
     filter_description =''            : varchar(256)
     """
-    contents = [['ET575LP','Chroma','575 Long Pass']]
 
 
 @schema
