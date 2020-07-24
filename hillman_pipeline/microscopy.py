@@ -32,6 +32,7 @@ class Laser(dj.Lookup):
     """
     contents = [['OBIS488_150mW','Coherent','1220123','488','150',0]]
 
+
 @schema
 class Objective(dj.Lookup):
     # Objectives inventory
@@ -44,9 +45,10 @@ class Objective(dj.Lookup):
     objective_manufacturer         : enum('Nikon', 'Olympus', 'Leica', 'Zeiss', 'Edmund', 'Mitutoyo')
     objective_part_number          : varchar(64)
     objective_focal_length         : decimal(5, 2)  # (mm)
-    objective_back_focal_plane=''  : decimal(5, 2)  # (mm)
+    objective_back_focal_plane=0     : decimal(5, 2)  # (mm)
     """
-    contents =[['Olympus20X_1.0','20','1.0','water','Olympus','XLUMPLFLN20XW',9]]
+    contents =[['Olympus20X_1.0','20','1.0','water','Olympus','XLUMPLFLN20XW',9,'']]
+
 
 @schema
 class Camera(dj.Lookup):
@@ -73,7 +75,8 @@ class TubeLens(dj.Lookup):
     tubelens_part_number=''     : varchar(64)
     tubelens_zoomable=0         : bool
     """
-    contents = [['Canon EF 85mm f/1.8',85,'Canon','']]
+    contents = [['Canon EF 85mm f/1.8',85,'Canon','',0]]
+
 
 @schema
 class Filter(dj.Lookup):
@@ -99,7 +102,8 @@ class ScapeConfig(dj.Manual):
     scape_magnification      : float         # Magnification ratio with respect to 70 mm tube lens
     calibration_galvo        : decimal(5, 2) # um per voltage
     """
-
+    # SCAPELOG?
+    
     class Laser(dj.Part):
         # Laser in use
         definition = """

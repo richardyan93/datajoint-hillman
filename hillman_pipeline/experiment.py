@@ -11,7 +11,7 @@ class Species(dj.Lookup):
     definition = """
     species        :  varchar(32)
     """
-    contents = zip(['mouse', 'C elegans', 'rat', 'fly','zebrafish'])
+    contents = zip(['mouse', 'C elegans', 'rat', 'fly','zebrafish','human','weird stuff','Tardigrade'])
 
 
 @schema
@@ -29,11 +29,11 @@ class Genotype(dj.Lookup):
 
 @schema
 class TissueType(dj.Lookup):
-    # Check with Kripa
+    # Fixed,expanded,cleared,fresh
     definition = """
     tissue_type                 : varchar(32)
     ---
-    tissue_type_description=''  : varchar(255)
+    tissue_type_description=''  : varchar(1024)
     """
 
 
@@ -46,6 +46,7 @@ class Specimen(dj.Manual):
     -> Species
     -> [nullable] Genotype
     specimen_description =''    :varchar(1024)
+    pathology=''        :varchar(255)
     """
 
     class Tissue(dj.Part):
@@ -60,6 +61,7 @@ class Specimen(dj.Manual):
 
 @schema
 class PreparationType(dj.Lookup):
+    # In-vivo, ex-vivo, sliced
     definition = """
     prep_type    : varchar(32)
     ---
@@ -151,6 +153,9 @@ class Scan(dj.Manual):
     dual_color=0                    :   bool
     scan_size=null                  :   decimal(5, 1)     # GB
     -> [nullable] StimSetup
+    excitation_NA=nullable          :  enum('HighNA','MediumNA','LowNA')
+    nd_filter                       :  decimal(3, 2)      # O.D.
+    run_condition=''                :  enum('Awesome','SADDD','IcanGraduate!','Test','')
     """
 
     class DevStage(dj.Part):
@@ -213,11 +218,11 @@ class Scan(dj.Manual):
         ---
         laser_purpose=''            : varchar(32)
         laser_output_power          : decimal(5, 1)      # (mW)
-        nd_filter                   : decimal(3, 2)      # O.D.
-        laser_power_actual_mw       : decimal(7, 3)
+        laser_specimen_actualpower=''       : decimal(7, 3)   # (mW)
         laser_actual_wavelengh=null : decimal(5, 1)      # (nm)
         """
-
+        #Laser_reprate=null
+        
     class AiChannel(dj.Part):
         definition = """
         -> master
@@ -256,6 +261,7 @@ class Scan(dj.Manual):
         camera_series_length        :   int unsigned         # Total frames recorded, including background
         camera_height               :   smallint unsigned    # pixel
         camera_width                :   smallint unsigned    # pixel
-        tubelens_focal_length=null  :   decimal(5, 2)        # (mm)
+        tubelens_focal_length       :   decimal(5, 2)        # (mm)
         tubelens_na=null            :   decimal(3,1)
+        behavior_description=''     :   varchar(1024)
         """
