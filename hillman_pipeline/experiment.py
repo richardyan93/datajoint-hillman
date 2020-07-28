@@ -10,8 +10,9 @@ schema = dj.schema('hillman_experiment')
 class Species(dj.Lookup):
     definition = """
     species        :  varchar(32)
+    ---
+    species_description=''     : vharchar(256)
     """
-    contents = zip(['mouse', 'C elegans', 'rat', 'fly','zebrafish','human','weird stuff','Tardigrade'])
 
 
 @schema
@@ -50,12 +51,11 @@ class Specimen(dj.Manual):
     """
 
     class Tissue(dj.Part):
-        # Check with Kripa
         definition = """
         -> master
         ---
         -> TissueType
-        tissue_description='': varchar(1024)
+        tissue_description=''   : varchar(1024)
         """
 
 
@@ -65,7 +65,7 @@ class PreparationType(dj.Lookup):
     definition = """
     prep_type    : varchar(32)
     ---
-    prep_type_description='' : varchar(1024)
+    prep_type_description=''    : varchar(1024)
     """
 
 
@@ -87,7 +87,6 @@ class Organ(dj.Lookup):
     ---
     organ_discription=''    : varchar(255)
     """
-    contents = [['brain', ''], ['whole body', '']]
 
 
 @schema
@@ -151,21 +150,25 @@ class Scan(dj.Manual):
     scan_start_time                 :   datetime
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color=0                    :   bool
-    scan_size=null                  :   decimal(5, 1)     # GB
+    scan_size=0                     :   decimal(5, 1)     # GB
     -> [nullable] StimSetup
-    excitation_NA=nullable          :  enum('HighNA','MediumNA','LowNA')
-    nd_filter                       :  decimal(3, 2)      # O.D.
-    run_condition=''                :  enum('Awesome','SADDD','IcanGraduate!','Test','')
+    excitation_NA='Unknown'         :   enum('HighNA','MediumNA','LowNA','Unknown')
+    nd_filter                       :   decimal(3, 2)      # O.D.
+    run_condition='Unknown'         :   enum('Awesome','Test','Unknown','Failed Run')
+    scan_length_vol                 :   int unsigned    # Number of volumes recorded
+    scan_length_sec                 :   decimal(8, 2)   # second
+    scanner_type=''                 :   enum('HR', '', 'Single Frame', 'Stage Scan')
+    vps                             :   decimal(5, 2)
     """
 
     class DevStage(dj.Part):
         definition = """
         -> master
         ---
-        dev_stage   :  enum('larva', 'adult','embryo','others')
-        age         :  decimal(7, 2)            # age in the unit of age_unit
-        age_unit    :  enum('hours', 'days', 'months', 'years', 'instar')
-        dev_stage_note='': varchar(255)
+        dev_stage                   :   enum('larva', 'adult','embryo','others')
+        age                         :   decimal(7, 2)            # age in the unit of age_unit
+        age_unit                    :   enum('hours', 'days', 'months', 'years', 'instar')
+        dev_stage_note=''           :   varchar(255)
         """
 
     class CaliFactor(dj.Part):
@@ -177,16 +180,15 @@ class Scan(dj.Manual):
         calibration_z                :   decimal(4, 3)  # (um/pixel)
         """
 
-    class ScanParam(dj.Part):
+    class GalvoParam(dj.Part):
         definition = """
         -> master
         ---
-        vps                         :   decimal(5, 2)
         scan_fov_um                 :   decimal(7, 2)
         scan_fov_pixel              :   int unsigned    # Number of galvo steps,including flyback
-        scan_length_vol             :   int unsigned    # Number of volumes recorded
-        scan_length_s               :   decimal(8, 2)   # second
-        scanner_type=''             :   enum('HR', '', 'Single Frame', 'Stage Scan')
+        scan_angle=NULL                :   decimal(7, 3)
+        galvo_offset=0              :   decimal(4, 1)   # um
+        saw_tooth=0                 :   bool
         """
 
     class CameraParam(dj.Part):
@@ -194,12 +196,12 @@ class Scan(dj.Manual):
         -> master
         -> microscopy.ScapeConfig.Camera
         ---
-        camera_fps                  :   decimal(9, 2)
-        camera_series_length        :   int unsigned         # Total frames recorded, including background
-        camera_height               :   smallint unsigned    # pixel
-        camera_width                :   smallint unsigned    # pixel
+        camera_fps                          :   decimal(9, 2)
+        camera_series_length                :   int unsigned         # Total frames recorded, including background
+        camera_height                       :   smallint unsigned    # pixel
+        camera_width                        :   smallint unsigned    # pixel
         -> microscopy.TubeLens
-        tubelens_actual_focal_length=null  :   decimal(5, 2)  # (mm)
+        tubelens_actual_focal_length=null   :   decimal(5, 2)  # (mm)
         """
 
     class FilterParam(dj.Part):
@@ -216,13 +218,20 @@ class Scan(dj.Manual):
         -> master
         -> microscopy.ScapeConfig.Laser
         ---
-        laser_purpose=''            : varchar(32)
-        laser_output_power          : decimal(5, 1)      # (mW)
-        laser_specimen_actualpower=''       : decimal(7, 3)   # (mW)
-        laser_actual_wavelengh=null : decimal(5, 1)      # (nm)
+        laser_purpose=''                    : varchar(32)
+        laser_output_power                  : decimal(5, 1)      # (mW)
+        laser_specimen_actualpower=0        : decimal(7, 3)      # (mW)
         """
-        #Laser_reprate=null
-        
+
+    class TunableLaserParam(dj.Part):
+        definition = """
+        -> master
+        -> microscopy.ScapeConfig.Laser
+        ---
+        laser_wavelengh             : decimal(5, 1)      # (nm)
+        laser_reprate               : decimal(7, 1)      # (kHz)
+        """
+
     class AiChannel(dj.Part):
         definition = """
         -> master
@@ -232,13 +241,10 @@ class Scan(dj.Manual):
         channel_description=''      : varchar(1024)
         """
 
-    class MiscParam(dj.Part):
+    class DaqParam(dj.Part):
         definition = """
         -> master
         ---
-        saw_tooth=0                 :   bool
-        scan_angle=NULL             :   decimal(7, 3)
-        galvo_offset=0              :   decimal(4, 1)   # um
         ai_sampling_rate            :   int unsigned
         daq_data_filename           :   varchar(256)    # DAQ AI file name
         """
@@ -246,9 +252,9 @@ class Scan(dj.Manual):
     class MiscFiles(dj.Part):
         definition = """
         -> master
-        filename                    : varchar(256)
+        filename                    :   varchar(256)
         ---
-        file_description=''         : varchar(1024)
+        file_description=''         :   varchar(1024)
         """
 
     class BehaviorCamera(dj.Part):
@@ -256,12 +262,12 @@ class Scan(dj.Manual):
         -> master
         -> BehavioralSetup.Camera
         ---
-        behavior_recording_filename     : varchar(256)
-        camera_fps                  :   decimal(7, 2)
-        camera_series_length        :   int unsigned         # Total frames recorded, including background
-        camera_height               :   smallint unsigned    # pixel
-        camera_width                :   smallint unsigned    # pixel
-        tubelens_focal_length       :   decimal(5, 2)        # (mm)
-        tubelens_na=null            :   decimal(3,1)
-        behavior_description=''     :   varchar(1024)
+        behavior_recording_filename     :   varchar(256)
+        camera_fps                      :   decimal(7, 2)
+        camera_series_length            :   int unsigned         # Total frames recorded, including background
+        camera_height                   :   smallint unsigned    # pixel
+        camera_width                    :   smallint unsigned    # pixel
+        tubelens_focal_length           :   decimal(5, 2)        # (mm)
+        tubelens_na=null                :   decimal(3,1)
+        behavior_description=''         :   varchar(1024)
         """
