@@ -257,6 +257,15 @@ class Scan(dj.Manual):
         file_description=''         :   varchar(1024)
         """
 
+    class MiscParam(dj.Part):
+        definition = """
+        -> master
+        param_name              : varchar(32)
+        ---
+        param_value             : varchar(64)
+        param_description=''    : varchar(256)
+        """
+
     class BehaviorCamera(dj.Part):
         definition = """
         -> master
