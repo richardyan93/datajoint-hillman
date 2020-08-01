@@ -93,7 +93,7 @@ class Filter(dj.Lookup):
 
 
 @schema
-class ScapeConfig(dj.Manual):
+class ScapeConfig(dj.Lookup):
     # Version of Optical/Hardware Setup
     definition = """
     scape_config_number      : varchar(32)   # e.g. 3.1.2
