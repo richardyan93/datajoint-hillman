@@ -39,6 +39,25 @@ class TissueType(dj.Lookup):
 
 
 @schema
+class PreparationType(dj.Lookup):
+    # In-vivo, ex-vivo, sliced
+    definition = """
+    prep_type    : varchar(32)
+    ---
+    prep_type_description=''    : varchar(1024)
+    """
+
+
+@schema
+class Organ(dj.Lookup):
+    definition = """
+    organ                   : varchar(32)
+    ---
+    organ_discription=''    : varchar(255)
+    """
+
+
+@schema
 class Specimen(dj.Manual):
     definition = """
     specimen        : varchar(64)
@@ -60,16 +79,6 @@ class Specimen(dj.Manual):
 
 
 @schema
-class PreparationType(dj.Lookup):
-    # In-vivo, ex-vivo, sliced
-    definition = """
-    prep_type    : varchar(32)
-    ---
-    prep_type_description=''    : varchar(1024)
-    """
-
-
-@schema
 class Preparation(dj.Manual):
     definition = """
     -> Specimen
@@ -77,15 +86,6 @@ class Preparation(dj.Manual):
     ---
     -> PreparationType
     prep_note=''    : varchar(1024)
-    """
-
-
-@schema
-class Organ(dj.Lookup):
-    definition = """
-    organ                   : varchar(32)
-    ---
-    organ_discription=''    : varchar(255)
     """
 
 
@@ -166,8 +166,8 @@ class Scan(dj.Manual):
         -> master
         ---
         dev_stage                   :   enum('larva', 'adult','embryo','others')
-        age                         :   decimal(7, 2)            # age in the unit of age_unit
-        age_unit                    :   enum('hours', 'days', 'months', 'years', 'instar')
+        age=0                       :   decimal(7, 2)            # age in the unit of age_unit
+        age_unit='Unknown'          :   enum('hours', 'days', 'months', 'years', 'instar','Unknown')
         dev_stage_note=''           :   varchar(255)
         """
 
@@ -186,7 +186,7 @@ class Scan(dj.Manual):
         ---
         scan_fov_um                 :   decimal(7, 2)
         scan_fov_pixel              :   int unsigned    # Number of galvo steps,including flyback
-        scan_angle=NULL                :   decimal(7, 3)
+        scan_angle=NULL             :   decimal(7, 3)
         galvo_offset=0              :   decimal(4, 1)   # um
         saw_tooth=0                 :   bool
         """
