@@ -9,14 +9,14 @@ schema = dj.schema('hillman_experiment')
 @schema
 class Specimen(dj.Manual):
     definition = """
-    specimen        : varchar(64)
+    specimen                                : varchar(64)
     ---
     -> lab.LabMember.proj(source='user')
     -> organism.Species
     -> [nullable] organism.Genotype
-    specimen_description =''    :varchar(1024)
-    pathology=''        :varchar(255)
     -> [nullable] organism.TissueType
+    specimen_description =''                :varchar(1024)
+    pathology=''                            :varchar(255)
     """
 
     class Preparation(dj.Part):
@@ -24,51 +24,21 @@ class Specimen(dj.Manual):
         -> master
         ---
         -> organism.PreparationType
-        prep_time       : datetime
-        prep_note=''    : varchar(1024)
+        prep_time                           : datetime
+        prep_note=''                        : varchar(1024)
         """
-
-
-@schema
-class BehavioralSetup(dj.Manual):
-    definition = """
-    behavior_setup                       : varchar(32)    # unique nickname of a behavior set up
-    ---
-    behavior_setup_date                  : date
-    behavior_setup_description=''        : varchar(1024)
-    """
-
-    class Camera(dj.Part):
-        definition = """
-        -> master
-        camera_id               :  tinyint unsigned
-        ---
-        -> microscopy.Camera
-        -> [nullable] microscopy.Filter
-        camera_description=''   : varchar(1024)
-        """
-
-
-@schema
-class StimSetup(dj.Manual):
-    definition = """
-    stim_setup                  : varchar(32)     # unique nickname of a stim set up
-    ---
-    stim_description            : varchar(1024)
-    """
-
 
 @schema
 class Session(dj.Manual):
     definition = """
-    session_name            : varchar(32)
+    session_name                            : varchar(32)
     ---
     -> lab.LabMember
     -> microscopy.ScapeConfig
     -> [nullable] lab.Project
-    session_date            : datetime
-    data_directory          : varchar(256)     # location on server
-    backup_location         : varchar(64)      # location of cold backup, eg. GOAT_BACKUP_10
+    session_date                            : datetime
+    data_directory                          : varchar(256)     # location on server
+    backup_location                         : varchar(64)      # location of cold backup, eg. GOAT_BACKUP_10
     """
 
     class Specimen(dj.Part):
@@ -84,14 +54,12 @@ class Scan(dj.Manual):
     -> Session.Specimen
     scan_name                       :   varchar(64)
     ---
-    -> [nullable] organism.Organ
     scan_metadata_file              :   varchar(256)   # File name of metadata
     scan_note=''                    :   varchar(1024)
     scan_start_time                 :   datetime
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color=0                    :   bool
     scan_size=0                     :   decimal(5, 1)     # GB
-    -> [nullable] StimSetup
     excitation_NA='Unknown'         :   enum('HighNA','MediumNA','LowNA','Unknown')
     nd_filter                       :   decimal(3, 2)      # O.D.
     run_condition='Unknown'         :   enum('Awesome','Test','Unknown','Failed Run')
@@ -99,25 +67,30 @@ class Scan(dj.Manual):
     scan_length_sec                 :   decimal(8, 2)   # second
     scanner_type=''                 :   enum('HR', '', 'Single Frame', 'Stage Scan')
     vps                             :   decimal(5, 2)
+    ai_sampling_rate                :   int unsigned
+    daq_data_filename               :   varchar(256)    # DAQ AI file name
+    -> [nullable] organism.Organ
+    -> [nullable] peripheralSetup.StimSetup
+    -> [nullable] peripheralSetup.BehavioralSetup
     """
 
     class DevStage(dj.Part):
         definition = """
         -> master
         ---
-        dev_stage                   :   enum('larva', 'adult','embryo','others')
-        age=0                       :   decimal(7, 2)            # age in the unit of age_unit
-        age_unit='Unknown'          :   enum('hours', 'days', 'months', 'years', 'instar','Unknown')
-        dev_stage_note=''           :   varchar(255)
+        dev_stage                       :   enum('larva', 'adult','embryo','others')
+        age=0                           :   decimal(7, 2)            # age in the unit of age_unit
+        age_unit='Unknown'              :   enum('hours', 'days', 'months', 'years', 'instar','Unknown')
+        dev_stage_note=''               :   varchar(255)
         """
 
     class CaliFactor(dj.Part):
         definition = """
         -> master
         ---
-        calibration_x                :   decimal(5, 3)  # (um/pixel)
-        calibration_y                :   decimal(4, 3)  # (um/pixel)
-        calibration_z                :   decimal(4, 3)  # (um/pixel)
+        calibration_x                   :   decimal(5, 3)  # (um/pixel)
+        calibration_y                   :   decimal(4, 3)  # (um/pixel)
+        calibration_z                   :   decimal(4, 3)  # (um/pixel)
         """
 
     class GalvoParam(dj.Part):
@@ -179,14 +152,6 @@ class Scan(dj.Manual):
         ---
         channel_purpose='hardware'  : enum('stimulus', 'hardware', 'other')
         channel_description=''      : varchar(1024)
-        """
-
-    class DaqParam(dj.Part):
-        definition = """
-        -> master
-        ---
-        ai_sampling_rate            :   int unsigned
-        daq_data_filename           :   varchar(256)    # DAQ AI file name
         """
 
     class MiscFiles(dj.Part):
