@@ -1,60 +1,9 @@
 import datajoint as dj
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-import microscopy, lab
+import microscopy, lab, organism
 
 schema = dj.schema('hillman_experiment')
-
-
-@schema
-class Species(dj.Lookup):
-    definition = """
-    species        :  varchar(32)
-    ---
-    species_description=''     : vharchar(256)
-    """
-
-
-@schema
-class Genotype(dj.Lookup):
-    definition = """
-    -> Species
-    genotype_nickname           : varchar(32)
-    ---
-    genotype_fullname           : varchar(255)
-    zygosity='Unknown'          : enum('Homo', 'Hetero', 'Positive', 'Negative', 'Unknown')
-    genotype_description=''     : varchar(1024)
-    source=''                   : varchar(32)
-    """
-
-
-@schema
-class TissueType(dj.Lookup):
-    # Fixed,expanded,cleared,fresh
-    definition = """
-    tissue_type                 : varchar(32)
-    ---
-    tissue_type_description=''  : varchar(1024)
-    """
-
-
-@schema
-class PreparationType(dj.Lookup):
-    # In-vivo, ex-vivo, sliced
-    definition = """
-    prep_type    : varchar(32)
-    ---
-    prep_type_description=''    : varchar(1024)
-    """
-
-
-@schema
-class Organ(dj.Lookup):
-    definition = """
-    organ                   : varchar(32)
-    ---
-    organ_discription=''    : varchar(255)
-    """
 
 
 @schema
@@ -67,26 +16,17 @@ class Specimen(dj.Manual):
     -> [nullable] Genotype
     specimen_description =''    :varchar(1024)
     pathology=''        :varchar(255)
+    -> [nullable] TissueType
     """
 
-    class Tissue(dj.Part):
+    class Preparation(dj.Part):
         definition = """
         -> master
         ---
-        -> TissueType
-        tissue_description=''   : varchar(1024)
+        -> PreparationType
+        prep_time       : datetime
+        prep_note=''    : varchar(1024)
         """
-
-
-@schema
-class Preparation(dj.Manual):
-    definition = """
-    -> Specimen
-    prep_time       : datetime
-    ---
-    -> PreparationType
-    prep_note=''    : varchar(1024)
-    """
 
 
 @schema
