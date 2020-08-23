@@ -9,7 +9,7 @@ class Species(dj.Lookup):
     definition = """
     species                     : varchar(32)
     ---
-    species_description=''      : vharchar(256)
+    species_description=''      : varchar(256)
     """
 
 

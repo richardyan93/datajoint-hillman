@@ -1,7 +1,7 @@
 import datajoint as dj
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-import microscopy, lab, organism
+import microscopy, lab, organism, peripheralSetup
 
 schema = dj.schema('hillman_experiment')
 
@@ -60,7 +60,6 @@ class Scan(dj.Manual):
     scan_status                     :   enum('Successful', 'Interrupted','NULL')
     dual_color=0                    :   bool
     scan_size=0                     :   decimal(5, 1)     # GB
-    excitation_NA='Unknown'         :   enum('HighNA','MediumNA','LowNA','Unknown')
     nd_filter                       :   decimal(3, 2)      # O.D.
     run_condition='Unknown'         :   enum('Awesome','Test','Unknown','Failed Run')
     scan_length_vol                 :   int unsigned    # Number of volumes recorded
@@ -174,7 +173,7 @@ class Scan(dj.Manual):
     class BehaviorCamera(dj.Part):
         definition = """
         -> master
-        -> BehavioralSetup.Camera
+        -> peripheralSetup.BehavioralSetup.Camera
         ---
         behavior_recording_filename     :   varchar(256)
         camera_fps                      :   decimal(7, 2)
