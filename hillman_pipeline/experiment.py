@@ -12,18 +12,18 @@ class Specimen(dj.Manual):
     specimen        : varchar(64)
     ---
     -> lab.LabMember.proj(source='user')
-    -> Species
-    -> [nullable] Genotype
+    -> organism.Species
+    -> [nullable] organism.Genotype
     specimen_description =''    :varchar(1024)
     pathology=''        :varchar(255)
-    -> [nullable] TissueType
+    -> [nullable] organism.TissueType
     """
 
     class Preparation(dj.Part):
         definition = """
         -> master
         ---
-        -> PreparationType
+        -> organism.PreparationType
         prep_time       : datetime
         prep_note=''    : varchar(1024)
         """
@@ -44,7 +44,7 @@ class BehavioralSetup(dj.Manual):
         camera_id               :  tinyint unsigned
         ---
         -> microscopy.Camera
-        -> microscopy.Filter
+        -> [nullable] microscopy.Filter
         camera_description=''   : varchar(1024)
         """
 
@@ -65,7 +65,7 @@ class Session(dj.Manual):
     ---
     -> lab.LabMember
     -> microscopy.ScapeConfig
-    -> [nullable]lab.Project
+    -> [nullable] lab.Project
     session_date            : datetime
     data_directory          : varchar(256)     # location on server
     backup_location         : varchar(64)      # location of cold backup, eg. GOAT_BACKUP_10
@@ -84,7 +84,7 @@ class Scan(dj.Manual):
     -> Session.Specimen
     scan_name                       :   varchar(64)
     ---
-    -> [nullable] Organ
+    -> [nullable] organism.Organ
     scan_metadata_file              :   varchar(256)   # File name of metadata
     scan_note=''                    :   varchar(1024)
     scan_start_time                 :   datetime
