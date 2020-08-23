@@ -3,7 +3,7 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import microscopy
 
-schema = dj.schema('hillman_peripheralSetup')
+schema = dj.schema('hillman_peripheralsetup')
 
 @schema
 class BehavioralSetup(dj.Manual):
