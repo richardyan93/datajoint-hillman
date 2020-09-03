@@ -1,7 +1,7 @@
 import datajoint as dj
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-import microscopy, lab, organism, peripheralsetup
+import microscopy, lab, organism, setup
 
 schema = dj.schema('hillman_experiment')
 
@@ -69,8 +69,8 @@ class Scan(dj.Manual):
     ai_sampling_rate                :   int unsigned
     daq_data_filename               :   varchar(256)    # DAQ AI file name
     -> [nullable] organism.Organ
-    -> [nullable] peripheralsetup.StimSetup
-    -> [nullable] peripheralsetup.BehavioralSetup
+    -> [nullable] setup.StimSetup
+    -> [nullable] setup.BehavioralSetup
     """
 
     class DevStage(dj.Part):
@@ -173,7 +173,7 @@ class Scan(dj.Manual):
     class BehaviorCamera(dj.Part):
         definition = """
         -> master
-        -> peripheralsetup.BehavioralSetup.Camera
+        -> setup.BehavioralSetup.Camera
         ---
         behavior_recording_filename     :   varchar(256)
         camera_fps                      :   decimal(7, 2)

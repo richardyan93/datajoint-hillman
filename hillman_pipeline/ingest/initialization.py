@@ -1,13 +1,12 @@
 import datajoint as dj
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import lab, microscopy, organism, peripheralsetup, experiment
+import lab, microscopy, organism, setup, experiment
 
 # lab.Lab
 data = [
   {'lab': 'Hillmanlab', 'lab_description': ''},
 ]
-
-lab.Lab.insert(data)
+lab.Lab.insert(data,skip_duplicates=True)
 
 # lab.LabMember
 data = [
@@ -17,7 +16,6 @@ data = [
     {'user':'Wenxuan_Liang','lab':'Hillmanlab'},
     {'user':'Malte_Casper','lab':'Hillmanlab'},
     {'user':'Grace_Lee','lab':'Hillmanlab'},
-    {'user':'Wenze_Li','lab':'Hillmanlab'},
     {'user':'Elizabeth_Malan','lab':'Hillmanlab'},
     {'user':'Kripa_Patel','lab':'Hillmanlab'},
     {'user':'Nic_Thibodeaux','lab':'Hillmanlab'},
@@ -29,13 +27,25 @@ data = [
     {'user':'Citlali_Campos','lab':'Hillmanlab'},
     {'user':'Alexis_Yagielski','lab':'Hillmanlab'},
 ]
-lab.LabMember.insert(data)
+lab.LabMember.insert(data,skip_duplicates=True)
 
 # lab.project
 data = [
     {'project':'NeuroPal','user':'Richard_Yan'},
     {'project':'Kimara Heart','user':'Richard_Yan'},
 ]
-lab.Project.insert(data)
+lab.Project.insert(data,skip_duplicates=True)
 
-# ScapeSystem
+# microscopy.ScapeSystem
+data = [
+    {'scape_name','Super SCAPE','person_in_charge','Wenze_Li'},
+    {'scape_name','Yan SCAPE','person_in_charge','Richard_Yan'},
+    {'scape_name','Meso SCAPE','person_in_charge','Grace_Lee'},
+    {'scape_name','2P SCAPE','person_in_charge','Hang_Yu'},
+]
+microscopy.ScapeSystem.insert(data,skip_duplicates=True)
+
+# microscopy.Laser
+data = [
+    {}
+]
