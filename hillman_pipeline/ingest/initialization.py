@@ -46,6 +46,18 @@ data = [
 microscopy.ScapeSystem.insert(data,skip_duplicates=True)
 
 # microscopy.Laser
-data = [
-    {}
+#data = []
+#microscopy.Laser.insert(data,skip_duplicates=True)
+
+# microscopy.Objectives
+data =[
+    {'objective','Olympus20x_1.0','objective_mag',20,'objective_na',1.0,
+    'objective_imm','water','objective_manufacturer','Olympus',
+    'objective_part_number','XLUMPLFLN20XW','objective_focal_length',9,
+    'objective_back_focal_plane',-48.1},
+    {'objective','Nikon40x_0.95','objective_mag',40,'objective_na',0.95,
+    'objective_imm','air','objective_manufacturer','Nikon',
+    'objective_part_number','CFI Plan Apochromat Lambda 40XC',
+    'objective_focal_length',5},
 ]
+microscopy.Objecitve.insert(data,skip_duplicates=True)

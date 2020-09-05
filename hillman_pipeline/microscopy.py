@@ -51,7 +51,7 @@ class Objective(dj.Lookup):
     objective_manufacturer         : enum('Nikon', 'Olympus', 'Leica', 'Zeiss', 'Edmund', 'Mitutoyo')
     objective_part_number          : varchar(64)
     objective_focal_length         : decimal(5, 2)  # (mm)
-    objective_back_focal_plane     : decimal(5, 2)  # (mm)
+    [nullable]objective_back_focal_plane     : decimal(5, 2)  # (mm)
     """
 
 
