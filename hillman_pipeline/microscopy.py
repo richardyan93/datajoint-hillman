@@ -12,8 +12,8 @@ class ScapeSystem(dj.Lookup):
     definition = """
     scape_name                   :   varchar(32)
     ---
-    scape_description=''         :   varchar(1024)
     -> lab.LabMember.proj(person_in_charge='user')
+    scape_description        :   varchar(1024)
     """
 
 
@@ -51,7 +51,7 @@ class Objective(dj.Lookup):
     objective_manufacturer         : enum('Nikon', 'Olympus', 'Leica', 'Zeiss', 'Edmund', 'Mitutoyo')
     objective_part_number          : varchar(64)
     objective_focal_length         : decimal(5, 2)  # (mm)
-    [nullable]objective_back_focal_plane     : decimal(5, 2)  # (mm)
+    objective_back_focal_plane=99     : decimal(5, 2)  # (mm)
     """
 
 

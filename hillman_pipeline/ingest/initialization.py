@@ -1,4 +1,5 @@
 import datajoint as dj
+import os,sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import lab, microscopy, organism, setup, experiment
 
@@ -38,10 +39,10 @@ lab.Project.insert(data,skip_duplicates=True)
 
 # microscopy.ScapeSystem
 data = [
-    {'scape_name','Super SCAPE','person_in_charge','Wenze_Li'},
-    {'scape_name','Yan SCAPE','person_in_charge','Richard_Yan'},
-    {'scape_name','Meso SCAPE','person_in_charge','Grace_Lee'},
-    {'scape_name','2P SCAPE','person_in_charge','Hang_Yu'},
+    {'scape_name':'Super SCAPE','person_in_charge':'Wenze_Li'},
+    {'scape_name':'Yan SCAPE','person_in_charge':'Richard_Yan'},
+    {'scape_name':'Meso SCAPE','person_in_charge':'Grace_Lee'},
+    {'scape_name':'2P SCAPE','person_in_charge':'Hang_Yu'},
 ]
 microscopy.ScapeSystem.insert(data,skip_duplicates=True)
 
@@ -49,15 +50,25 @@ microscopy.ScapeSystem.insert(data,skip_duplicates=True)
 #data = []
 #microscopy.Laser.insert(data,skip_duplicates=True)
 
-# microscopy.Objectives
+# microscopy.Objective
 data =[
-    {'objective','Olympus20x_1.0','objective_mag',20,'objective_na',1.0,
-    'objective_imm','water','objective_manufacturer','Olympus',
-    'objective_part_number','XLUMPLFLN20XW','objective_focal_length',9,
-    'objective_back_focal_plane',-48.1},
-    {'objective','Nikon40x_0.95','objective_mag',40,'objective_na',0.95,
-    'objective_imm','air','objective_manufacturer','Nikon',
-    'objective_part_number','CFI Plan Apochromat Lambda 40XC',
-    'objective_focal_length',5},
+    {'objective':'Olympus20x_1.0','objective_mag':20,'objective_na':1.0,
+    'objective_imm':'water','objective_manufacturer':'Olympus',
+    'objective_part_number':'XLUMPLFLN20XW','objective_focal_length':9,
+    'objective_back_focal_plane':-48.1},
+    {'objective':'Nikon40x_0.95','objective_mag':40,'objective_na':0.95,
+    'objective_imm':'air','objective_manufacturer':'Nikon',
+    'objective_part_number':'CFI Plan Apochromat Lambda 40XC',
+    'objective_focal_length':5,'objective_back_focal_plane':99},
+    {'objective':'Mitutoyo50x_0.75','objective_mag':50,'objective_na':0.75,
+    'objective_imm':'air','objective_manufacturer':'Mitutoyo',
+    'objective_part_number':'BD Plan Apo HR 50×',
+    'objective_focal_length':5,'objective_back_focal_plane':99},
 ]
-microscopy.Objecitve.insert(data,skip_duplicates=True)
+microscopy.Objective.insert(data,skip_duplicates=True)
+
+# microscopy.Camera
+data = [
+        {'camera'}
+]
+
