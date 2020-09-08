@@ -47,7 +47,18 @@ data = [
 microscopy.ScapeSystem.insert(data,skip_duplicates=True)
 
 # microscopy.Laser
-#data = []
+data = [
+    {'laser':'OBIS405','laser_brand':'Coherent','laser_part_number':'OBIS 405 nm LX 100 mW',
+    'laser_wavelength':405,'laser_max_power':100},
+    {'laser':'OBIS488','laser_brand':'Coherent','laser_part_number':'OBIS 488 nm LX 150 mW',
+    'laser_wavelength':488,'laser_max_power':150},
+    {'laser':'OBIS561','laser_brand':'Coherent','laser_part_number':'OBIS 561 nm LS 150 mW',
+    'laser_wavelength':561,'laser_max_power':150},
+    {'laser':'OBIS594','laser_brand':'Coherent','laser_part_number':'OBIS 594 nm LS 100 mW',
+    'laser_wavelength':594,'laser_max_power':100},
+    {'laser':'OBIS637','laser_brand':'Coherent','laser_part_number':'OBIS 637 nm LX 140 mW',
+    'laser_wavelength':637,'laser_max_power':140},
+]
 #microscopy.Laser.insert(data,skip_duplicates=True)
 
 # microscopy.Objective
