@@ -69,6 +69,14 @@ microscopy.Objective.insert(data,skip_duplicates=True)
 
 # microscopy.Camera
 data = [
-        {'camera'}
+        {'camera':'zyla4.2','camera_manufacturer':'Andor','camera_model','Zyla4.2',
+        'camera_pixelsize':6.5,'is_color_camera',0},
+        {'camera':'HiCAM Fluo','camera_manufacturer':'Lambert','camera_model','HiCAM Fluo',
+        'camera_pixelsize':9.9,'is_color_camera',0},
 ]
+microscopy.Camera.insert(data,skip_duplicates=True)
 
+# microscopy.Tubelens
+
+
+# micoscopy.Filter
