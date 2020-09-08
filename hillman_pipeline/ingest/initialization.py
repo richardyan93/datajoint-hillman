@@ -78,5 +78,36 @@ microscopy.Camera.insert(data,skip_duplicates=True)
 
 # microscopy.Tubelens
 
-
 # micoscopy.Filter
+
+# organism.Species
+data = [
+    {'species':'C Elegans','species_description':''},
+    {'species':'Zebrafish','species_description':''},
+]
+organism.Species.insert(data,skip_duplicates=True)
+
+# organism.Genotype
+data = [
+    {'species':'C Elegans','genotype_nickname':'OH6230',
+    'genotype_fullname':'OH6230','zygosity':'Unknown',
+    'genotype_description':'','source':'Hobert Lab'},
+]
+organism.Genotype.insert(data,skip_duplicates=True)
+
+# organism.TissueType
+data = []
+organism.TissueType.insert(data,skip_duplicates=True)
+
+# organism.PreparationType
+data =[]
+organism.PreparationType.insert(data,skip_duplicates=True)
+
+# organism.Organ
+data = [
+    {'organ':'whole body','organ_discription':,''},
+    {'organ':'head','organ_discription':,''},
+    {'organ':'tail','organ_discription':,''},
+    {'organ':'Out flow track','organ_discription':,''},
+]
+organism.Organ.insert(data,skip_duplicates=True)
