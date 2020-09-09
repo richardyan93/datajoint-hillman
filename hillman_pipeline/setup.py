@@ -7,7 +7,7 @@ schema = dj.schema('hillman_setup')
 
 
 @schema
-class ScapeConfig(dj.Lookup):
+class Scapeconfig(dj.Lookup):
     # Version of Optical/Hardware Setup
     definition = """
     scape_config_number      : varchar(32)   # e.g. 3.1.2

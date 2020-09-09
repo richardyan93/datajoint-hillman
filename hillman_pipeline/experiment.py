@@ -34,7 +34,7 @@ class Session(dj.Manual):
     session_name                            : varchar(32)
     ---
     -> lab.LabMember
-    -> setup.ScapeConfig
+    -> setup.Scapeconfig
     -> [nullable] lab.Project
     session_date                            : datetime
     data_directory                          : varchar(256)     # location on server
@@ -106,7 +106,7 @@ class Scan(dj.Manual):
     class CameraParam(dj.Part):
         definition = """
         -> master
-        -> setup.ScapeConfig.Camera
+        -> setup.Scapeconfig.Camera
         ---
         camera_fps                          :   decimal(9, 2)
         camera_series_length                :   int unsigned         # Total frames recorded, including background
@@ -128,7 +128,7 @@ class Scan(dj.Manual):
     class LaserParam(dj.Part):
         definition = """
         -> master
-        -> setup.ScapeConfig.Laser
+        -> setup.Scapeconfig.Laser
         ---
         laser_purpose=''                    : varchar(32)
         laser_output_power                  : decimal(5, 1)      # (mW)
@@ -138,7 +138,7 @@ class Scan(dj.Manual):
     class TunableLaserParam(dj.Part):
         definition = """
         -> master
-        -> setup.ScapeConfig.Laser
+        -> setup.Scapeconfig.Laser
         ---
         laser_wavelengh             : decimal(5, 1)      # (nm)
         laser_reprate               : decimal(7, 1)      # (kHz)
