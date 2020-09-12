@@ -26,7 +26,6 @@ class Session(dj.Manual):
     session_name                            : varchar(32)
     ---
     -> lab.LabMember
-    -> setup.Scapeconfig
     -> [nullable] lab.Project
     session_date                            : datetime
     data_directory                          : varchar(256)     # location on server
@@ -61,6 +60,7 @@ class Scan(dj.Manual):
     ai_sampling_rate                :   int unsigned
     daq_data_filename               :   varchar(256)    # DAQ AI file name
     -> [nullable] organism.Organ
+    -> setup.Scapeconfig
     -> [nullable] setup.StimSetup
     -> [nullable] setup.BehavioralSetup
     filter_config                   :   varchar(1024)

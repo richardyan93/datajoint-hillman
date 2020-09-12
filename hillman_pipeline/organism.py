@@ -12,18 +12,27 @@ class Species(dj.Lookup):
     species_description=''      : varchar(256)
     """
 
+    @schema
+    class Organ(dj.Lookup):
+        definition = """
+        -> master
+        organ                       : varchar(32)
+        ---
+        organ_discription=''        : varchar(255)
+        """
 
-@schema
-class Genotype(dj.Lookup):
-    definition = """
-    -> Species
-    genotype_nickname           : varchar(32)
-    ---
-    genotype_fullname           : varchar(255)
-    zygosity='Unknown'          : enum('Homo', 'Hetero', 'Positive', 'Negative', 'Unknown')
-    genotype_description=''     : varchar(1024)
-    source=''                   : varchar(32)
-    """
+
+    @schema
+    class Genotype(dj.Lookup):
+        definition = """
+        -> master
+        genotype_nickname           : varchar(32)
+        ---
+        genotype_fullname           : varchar(255)
+        zygosity='Unknown'          : enum('Homo', 'Hetero', 'Positive', 'Negative', 'Unknown')
+        genotype_description=''     : varchar(1024)
+        source=''                   : varchar(32)
+        """
 
 
 @schema
@@ -43,13 +52,4 @@ class PreparationType(dj.Lookup):
     prep_type                   : varchar(32)
     ---
     prep_type_description=''    : varchar(1024)
-    """
-
-
-@schema
-class Organ(dj.Lookup):
-    definition = """
-    organ                       : varchar(32)
-    ---
-    organ_discription=''        : varchar(255)
     """
