@@ -15,18 +15,10 @@ class Specimen(dj.Manual):
     -> organism.Species
     -> [nullable] organism.Genotype
     -> [nullable] organism.TissueType
-    specimen_description =''                :varchar(1024)
-    pathology=''                            :varchar(255)
+    -> [nullable] organism.PreparationType
+    prep_time=NULL                          : datetime
+    specimen_description =''                : varchar(1024)
     """
-
-    class Preparation(dj.Part):
-        definition = """
-        -> master
-        ---
-        -> organism.PreparationType
-        prep_time                           : datetime
-        prep_note=''                        : varchar(1024)
-        """
 
 @schema
 class Session(dj.Manual):
