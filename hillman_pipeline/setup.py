@@ -38,13 +38,12 @@ class Scapeconfig(dj.Lookup):
         -> microscopy.Objective
         """
 
-    class Camera(dj.Part):
-        # Camera(s) that the SCAPE configuration may potentially employ
+    class Imagesplitter(dj.Part):
+        # Bichroic Image Splitter deployed
         definition = """
         -> master
-        camera_id            : tinyint
         ---
-        -> microscopy.Camera
+        -> microscopy.Filter
         """
 
 

@@ -53,7 +53,7 @@ class Scan(dj.Manual):
     dual_color=0                    :   bool
     scan_size=0                     :   decimal(5, 1)     # GB
     nd_filter                       :   decimal(3, 2)      # O.D.
-    run_condition='Unknown'         :   enum('Awesome','Test','Unknown','Failed Run')
+    run_condition='Unknown'         :   enum('Successful','Test','Unknown','Failed Run')
     scan_length_vol                 :   int unsigned    # Number of volumes recorded
     scan_length_sec                 :   decimal(8, 2)   # second
     scanner_type=''                 :   enum('HR', '', 'Single Frame', 'Stage Scan')
@@ -63,6 +63,7 @@ class Scan(dj.Manual):
     -> [nullable] organism.Organ
     -> [nullable] setup.StimSetup
     -> [nullable] setup.BehavioralSetup
+    filter_config                   :   varchar(1024)
     """
 
     class DevStage(dj.Part):
@@ -72,7 +73,6 @@ class Scan(dj.Manual):
         dev_stage                       :   enum('larva', 'adult','embryo','others')
         age=0                           :   decimal(7, 2)            # age in the unit of age_unit
         age_unit='Unknown'              :   enum('hours', 'days', 'months', 'years', 'instar','Unknown')
-        dev_stage_note=''               :   varchar(255)
         """
 
     class CaliFactor(dj.Part):
@@ -90,7 +90,7 @@ class Scan(dj.Manual):
         ---
         scan_fov_um                 :   decimal(7, 2)
         scan_fov_pixel              :   int unsigned    # Number of galvo steps,including flyback
-        scan_angle=NULL             :   decimal(7, 3)
+        scan_angle=0                :   decimal(7, 3)
         galvo_offset=0              :   decimal(4, 1)   # um
         saw_tooth=0                 :   bool
         """
@@ -98,23 +98,15 @@ class Scan(dj.Manual):
     class CameraParam(dj.Part):
         definition = """
         -> master
-        -> setup.Scapeconfig.Camera
+        camera_id                           :   tinyint
         ---
         camera_fps                          :   decimal(9, 2)
         camera_series_length                :   int unsigned         # Total frames recorded, including background
         camera_height                       :   smallint unsigned    # pixel
         camera_width                        :   smallint unsigned    # pixel
+        -> microscopy.Camera
         -> microscopy.TubeLens
         tubelens_actual_focal_length=null   :   decimal(5, 2)  # (mm)
-        """
-
-    class FilterParam(dj.Part):
-        definition = """
-        -> master
-        filter_index                :   smallint
-        ---
-        -> microscopy.Filter
-        position=''                 :   varchar(64)   # Position of the filter, e.g. Red channel, dual channel dichroic, etc.
         """
 
     class LaserParam(dj.Part):
