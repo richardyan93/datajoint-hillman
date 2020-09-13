@@ -18,6 +18,7 @@ class Scapeconfig(dj.Lookup):
     laser_coupling           : enum("Dichroic", "Mirror")
     scape_magnification      : float         # Magnification ratio with respect to 70 mm tube lens
     calibration_galvo        : decimal(5, 2) # um per voltage
+    -> [nullable] microscopy.Filter.proj(Imagesplitter='filter_part_number')
     """
 
     class Laser(dj.Part):
@@ -36,14 +37,6 @@ class Scapeconfig(dj.Lookup):
         objective_id         : tinyint # Objecitve 1/2/3
         ---
         -> microscopy.Objective
-        """
-
-    class Imagesplitter(dj.Part):
-        # Bichroic Image Splitter deployed
-        definition = """
-        -> master
-        ---
-        -> microscopy.Filter
         """
 
 

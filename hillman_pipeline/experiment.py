@@ -27,6 +27,7 @@ class Session(dj.Manual):
     ---
     -> lab.LabMember
     -> [nullable] lab.Project
+    -> [nullable] organism.Species
     session_date                            : datetime
     data_directory                          : varchar(256)     # location on server
     backup_location                         : varchar(64)      # location of cold backup, eg. GOAT_BACKUP_10
@@ -59,7 +60,6 @@ class Scan(dj.Manual):
     vps                             :   decimal(5, 2)
     ai_sampling_rate                :   int unsigned
     daq_data_filename               :   varchar(256)    # DAQ AI file name
-    -> [nullable] organism.Species
     -> [nullable] organism.Species.Organ
     -> setup.Scapeconfig
     -> [nullable] setup.StimSetup
