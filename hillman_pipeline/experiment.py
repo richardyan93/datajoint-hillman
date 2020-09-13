@@ -115,7 +115,6 @@ class Scan(dj.Manual):
         -> master
         -> setup.Scapeconfig.Laser
         ---
-        laser_purpose=''                    : varchar(32)
         laser_output_power                  : decimal(5, 1)      # (mW)
         laser_specimen_actualpower=0        : decimal(7, 3)      # (mW)
         """
