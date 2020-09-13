@@ -26,6 +26,7 @@ class Session(dj.Manual):
     session_name                            : varchar(32)
     ---
     -> lab.LabMember
+    -> setup.Scapeconfig
     -> [nullable] lab.Project
     -> [nullable] organism.Species
     session_date                            : date
@@ -61,7 +62,6 @@ class Scan(dj.Manual):
     ai_sampling_rate                :   int unsigned
     daq_data_filename               :   varchar(256)    # DAQ AI file name
     -> [nullable] organism.Species.Organ
-    -> setup.Scapeconfig
     -> [nullable] setup.StimSetup
     -> [nullable] setup.BehavioralSetup
     filter_config                   :   varchar(1024)
