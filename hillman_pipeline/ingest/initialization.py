@@ -100,7 +100,7 @@ organism.Species.insert(data,skip_duplicates=True)
 data = [
     {'species':'C Elegans','genotype_nickname':'OH6230','genotype_fullname':'OH6230','zygosity':'Unknown','genotype_description':'','source':'Hobert Lab'},
 ]
-organism.Genotype.insert(data,skip_duplicates=True)
+organism.Species.Genotype.insert(data,skip_duplicates=True)
 
 # organism.TissueType
 data = []
@@ -112,9 +112,9 @@ organism.PreparationType.insert(data,skip_duplicates=True)
 
 # organism.Organ
 data = [
-    {'organ':'whole body','organ_discription':''},
-    {'organ':'head','organ_discription':''},
-    {'organ':'tail','organ_discription':''},
-    {'organ':'Out flow track','organ_discription':''},
+    {'species':'C Elegans','organ':'whole body','organ_discription':''},
+    {'species':'C Elegans','organ':'head','organ_discription':''},
+    {'species':'C Elegans','organ':'tail','organ_discription':''},
+    {'species':'Zebrafish','organ':'Out flow track','organ_discription':''},
 ]
-organism.Organ.insert(data,skip_duplicates=True)
+organism.Species.Organ.insert(data,skip_duplicates=True)

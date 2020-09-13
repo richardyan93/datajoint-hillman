@@ -12,8 +12,7 @@ class Species(dj.Lookup):
     species_description=''      : varchar(256)
     """
 
-    @schema
-    class Organ(dj.Lookup):
+    class Organ(dj.Part):
         definition = """
         -> master
         organ                       : varchar(32)
@@ -22,8 +21,7 @@ class Species(dj.Lookup):
         """
 
 
-    @schema
-    class Genotype(dj.Lookup):
+    class Genotype(dj.Part):
         definition = """
         -> master
         genotype_nickname           : varchar(32)

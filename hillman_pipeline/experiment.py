@@ -13,7 +13,7 @@ class Specimen(dj.Manual):
     ---
     -> lab.LabMember.proj(source='user')
     -> organism.Species
-    -> [nullable] organism.Genotype
+    -> [nullable] organism.Species.Genotype
     -> [nullable] organism.TissueType
     -> [nullable] organism.PreparationType
     prep_time=NULL                          : datetime
@@ -59,7 +59,8 @@ class Scan(dj.Manual):
     vps                             :   decimal(5, 2)
     ai_sampling_rate                :   int unsigned
     daq_data_filename               :   varchar(256)    # DAQ AI file name
-    -> [nullable] organism.Organ
+    -> [nullable] organism.Species
+    -> [nullable] organism.Species.Organ
     -> setup.Scapeconfig
     -> [nullable] setup.StimSetup
     -> [nullable] setup.BehavioralSetup
