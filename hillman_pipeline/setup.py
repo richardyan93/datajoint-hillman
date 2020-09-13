@@ -10,7 +10,7 @@ schema = dj.schema('hillman_setup')
 class Scapeconfig(dj.Lookup):
     # Version of Optical/Hardware Setup
     definition = """
-    scape_config_number      : varchar(32)   # e.g. 3.1.2
+    scape_config_number      : varchar(64)   # e.g. Super SCAPE 3.1.2
     ---
     -> microscopy.ScapeSystem
     scape_config_date        : date
