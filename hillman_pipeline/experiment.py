@@ -59,7 +59,7 @@ class Scan(dj.Manual):
     scan_length_sec                 :   decimal(8, 2)   # second
     scanner_type=''                 :   enum('HR', '', 'Single Frame', 'Stage Scan')
     vps                             :   decimal(5, 2)
-    ai_sampling_rate                :   int unsigned
+    ai_sampling_rate=0              :   int unsigned
     daq_data_filename               :   varchar(256)    # DAQ AI file name
     -> [nullable] organism.Species.Organ
     -> [nullable] setup.StimSetup
