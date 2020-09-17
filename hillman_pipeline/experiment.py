@@ -105,6 +105,7 @@ class Scan(dj.Manual):
         camera_series_length                :   int unsigned         # Total frames recorded, including background
         camera_height                       :   smallint unsigned    # pixel
         camera_width                        :   smallint unsigned    # pixel
+        camera_left=0                       :   smallint unsigner    # pixel
         -> microscopy.Camera
         -> microscopy.TubeLens
         tubelens_actual_focal_length=null   :   decimal(5, 2)  # (mm)
