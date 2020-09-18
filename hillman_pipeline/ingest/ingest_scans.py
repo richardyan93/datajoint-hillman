@@ -2,7 +2,7 @@ import datajoint as dj
 import h5py
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import experiment, microscopy
+import experiment
 import re
 import datetime
 import numpy as np

@@ -12,8 +12,8 @@ class ScapeSystem(dj.Lookup):
     definition = """
     scape_name                   :   varchar(32)
     ---
-    scape_description=''         :   varchar(1024)
     -> lab.LabMember.proj(person_in_charge='user')
+    scape_description=''        :   varchar(1024)
     """
 
 
@@ -51,7 +51,7 @@ class Objective(dj.Lookup):
     objective_manufacturer         : enum('Nikon', 'Olympus', 'Leica', 'Zeiss', 'Edmund', 'Mitutoyo')
     objective_part_number          : varchar(64)
     objective_focal_length         : decimal(5, 2)  # (mm)
-    objective_back_focal_plane     : decimal(5, 2)  # (mm)
+    objective_back_focal_plane=99     : decimal(5, 2)  # (mm)
     """
 
 
@@ -90,45 +90,3 @@ class Filter(dj.Lookup):
     filter_manufacturer               : varchar(64)
     filter_description =''            : varchar(256)
     """
-
-
-@schema
-class ScapeConfig(dj.Manual):
-    # Version of Optical/Hardware Setup
-    definition = """
-    scape_config_number      : varchar(32)   # e.g. 3.1.2
-    ---
-    -> ScapeSystem
-    scape_config_date        : date
-    sys_description=''       : varchar(1024)
-    laser_coupling           : enum("Dichroic", "Mirror")
-    scape_magnification      : float         # Magnification ratio with respect to 70 mm tube lens
-    calibration_galvo        : decimal(5, 2) # um per voltage
-    """
-
-    class Laser(dj.Part):
-        # Laser in use
-        definition = """
-        -> master
-        laser_id             : tinyint # Laser 1,2...,n. n is The number of lasers in the system
-        ---
-        -> Laser
-        """
-
-    class Objective(dj.Part):
-        # Objective in use
-        definition = """
-        -> master
-        objective_id         : tinyint # Objecitve 1/2/3
-        ---
-        -> Objective
-        """
-
-    class Camera(dj.Part):
-        # Camera(s) that the SCAPE configuration may potentially employ
-        definition = """
-        -> master
-        camera_id            : tinyint
-        ---
-        -> Camera
-        """
