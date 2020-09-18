@@ -13,7 +13,7 @@ class ScapeSystem(dj.Lookup):
     scape_name                   :   varchar(32)
     ---
     -> lab.LabMember.proj(person_in_charge='user')
-    scape_description        :   varchar(1024)
+    scape_description=''        :   varchar(1024)
     """
 
 
