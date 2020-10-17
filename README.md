@@ -1,2 +1,2 @@
 # datajoint-hillman
-Datajoint pipelines and code for the Hillman lab.
+Datajoint pipelines and code for the Hillman lab (SCAPE Team).
