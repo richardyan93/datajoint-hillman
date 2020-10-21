@@ -9,3 +9,4 @@
 
 4. Now let's start to setup the docker environment. Create a folder that you want to store the database. The files that customize the settings are `Dockerfile` and `docker-compose.yml`, so copy these files to the folder that you just created. Finally, run 'docker-compose up -d' or 'sudo docker-compose up -d' depending on the OS to start the MySQL server in the terminal.
 After it is finished, you could check the status of the docker container by docker ps.
+
