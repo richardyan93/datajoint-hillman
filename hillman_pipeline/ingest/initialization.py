@@ -75,12 +75,20 @@ microscopy.Camera.insert(data,skip_duplicates=True)
 data = [
     {'tubelens':'navitar_35/1.4','tubelens_focal_length':35,'tubelens_manufacturer':'Navitar','tubelens_part_number':'MVL35M1','tubelens_zoomable':0},
     {'tubelens':'canon_50/1.8','tubelens_focal_length':50,'tubelens_manufacturer':'Canon','tubelens_part_number':'','tubelens_zoomable':0},
-    {'tubelens':'Nikon_70','tubelens_focal_length':70,'tubelens_manufacturer':'Nikon','tubelens_part_number':'','tubelens_zoomable':0},
+    {'tubelens':'nikon_70','tubelens_focal_length':70,'tubelens_manufacturer':'Nikon','tubelens_part_number':'','tubelens_zoomable':0},
     {'tubelens':'navitar_100/2.8','tubelens_focal_length':100,'tubelens_manufacturer':'Navitar','tubelens_part_number':'MVL100M23','tubelens_zoomable':0},
+    {'tubelens':'canon_85/1.8','tubelens_focal_length':85,'tubelens_manufacturer':'Canon','tubelens_part_number':'CA8518EF','tubelens_zoomable':0},
+    {'tubelens':'sony_135/1.8','tubelens_focal_length':135,'tubelens_manufacturer':'Sony','tubelens_part_number':'sal135f18z','tubelens_zoomable':0},
+    {'tubelens':'navitar_50/0.95','tubelens_focal_length':50,'tubelens_manufacturer':'Navitar','tubelens_part_number':'MVL50HS','tubelens_zoomable':0},
+    {'tubelens':'canon_50/1.4','tubelens_focal_length':50,'tubelens_manufacturer':'Canon','tubelens_part_number':'SI5014AC','tubelens_zoomable':0},
+    {'tubelens':'canon_50/1.8','tubelens_focal_length':50,'tubelens_manufacturer':'Canon','tubelens_part_number':'CA5018EFSTM','tubelens_zoomable':0},
+    {'tubelens':'olympus_63','tubelens_focal_length':63,'tubelens_manufacturer':'Olympus','tubelens_part_number':'U-TLU','tubelens_zoomable':0},
+    {'tubelens':'thorlabs_200','tubelens_focal_length':200,'tubelens_manufacturer':'Thorlabs','tubelens_part_number':'TTL200','tubelens_zoomable':0},
+    {'tubelens':'canon_70-200zoom','tubelens_focal_length':200,'tubelens_manufacturer':'Canon','tubelens_part_number':'CAN 2751B005','tubelens_zoomable':1},
 ]
 microscopy.TubeLens.insert(data,skip_duplicates=True)
 
-# micoscopy.Filter
+# micoscopy.Filterc
 data = [
     {'filter_part_number':'FF01-449/520-25','filter_manufacturer':'Semrock','filter_description':'BFP/GFP DUAL BANDPASS'},
     {'filter_part_number':'ZET594TopNotch','filter_manufacturer':'Chroma','filter_description':'594 Bandstop'},
@@ -99,6 +107,7 @@ organism.Species.insert(data,skip_duplicates=True)
 # organism.Genotype
 data = [
     {'species':'C Elegans','genotype_nickname':'OH6230','genotype_fullname':'OH6230','zygosity':'Unknown','genotype_description':'','source':'Hobert Lab'},
+    {'species':'Zebrafish','genotype_nickname':'flk:GFP/gata:DsRed','genotype_fullname':'flk:GFP/gata:DsRed','zygosity':'Unknown','genotype_description':'','source':'Targoff Lab'},
 ]
 organism.Species.Genotype.insert(data,skip_duplicates=True)
 
