@@ -123,7 +123,6 @@ root/.one_params
 datajoint-hillman/hillman_mouse_pipeline/+hillman_mouse_auxiliary/configSchema
 
 # docker related file
-docker-compose.yml
 docker-compose-local.yml
 ibl_docker_setup.sh
 
@@ -132,6 +131,3 @@ data/*
 
 # svg file
 *.svg
-
-hillman_pipeline/design_ERD.ipynb
-hillman_pipeline/design_ERD.ipynb
