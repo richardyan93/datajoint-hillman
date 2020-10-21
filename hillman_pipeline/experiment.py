@@ -133,7 +133,7 @@ class Scan(dj.Manual):
         -> master
         channel_index               : smallint   # Physical DAQ analog input ID
         ---
-        channel_name                : varcahr(64)
+        channel_name                : varchar(64)
         channel_description=''      : varchar(1024)
         """
 
