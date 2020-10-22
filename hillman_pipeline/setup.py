@@ -16,7 +16,7 @@ class Scapeconfig(dj.Lookup):
     scape_config_date        : date
     sys_description=''       : varchar(1024)
     laser_coupling           : enum("Dichroic", "Mirror")
-    scape_magnification      : float         # Magnification ratio with respect to 70 mm tube lens
+    pixelsize                : float         # Pixel size on zyla with 70 mm tube lens
     calibration_galvo        : decimal(5, 2) # um per voltage
     -> [nullable] microscopy.Filter.proj(Imagesplitter='filter_part_number')
     """
