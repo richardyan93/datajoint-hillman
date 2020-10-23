@@ -91,8 +91,8 @@ class Scan(dj.Manual):
         ---
         scan_fov_um                 :   decimal(7, 2)
         scan_fov_pixel              :   int unsigned    # Number of galvo steps,including flyback
-        scan_angle=0                :   decimal(7, 3)
-        galvo_offset=0              :   decimal(4, 1)   # um
+        scan_angle                  :   decimal(7, 3)
+        galvo_offset                :   decimal(4, 1)   # um
         saw_tooth=0                 :   bool
         """
 
