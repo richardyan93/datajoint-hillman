@@ -99,6 +99,7 @@ microscopy.Filter.insert(data,skip_duplicates=True)
 
 # organism.Species
 data = [
+    {'species':'NULL','species_description':''},
     {'species':'C Elegans','species_description':''},
     {'species':'Zebrafish','species_description':''},
 ]
