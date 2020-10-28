@@ -32,6 +32,7 @@ class Session(dj.Manual):
     session_date                            : date
     data_directory                          : varchar(256)     # location on server
     backup_location                         : varchar(64)      # location of cold backup, eg. GOAT_BACKUP_10
+    session_description =''                 : varchar(1024)
     """
 
     class Specimen(dj.Part):
